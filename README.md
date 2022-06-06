@@ -23,13 +23,13 @@ Our ultimate goal is to deliver a scalable/flexible custom solution for all type
 ### Linux
 1. run `nano ~/.bashrc`
 2. paste `alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'` at the bottom of the file
-3. press `ctrl + o`, then `ctrl + x`
+3. press `ctrl + o` press `ctrl + o`, then `ctrl + x` and press `Enter` afterwrds, then `ctrl + x`
 4. run `exit`
 
 ### Mac
 1. run `nano ~/.zshrc`
 2. paste `alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'` at the bottom of the file
-3. press `ctrl + o`, then `ctrl + x`
+3. press `ctrl + o` press `ctrl + o`, then `ctrl + x` and press `Enter` afterwrds, then `ctrl + x`
 4. run `exit`
 
 ### Docker Setup
