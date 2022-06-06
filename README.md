@@ -1,4 +1,4 @@
-<p align="center"><a href="https://coopco.com.ng" target="_blank"><img src="https://coopco.com.ng/assets/images/logo.png" width="400"></a></p>
+<p align="center"><a href="https://coopco.com.ng" target="_blank"><img src="https://coopco.com.ng/assets/images/logo.png" width="200"></a></p>
 
 
 ## About Coopco
