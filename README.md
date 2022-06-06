@@ -19,7 +19,7 @@ Our ultimate goal is to deliver a scalable/flexible custom solution for all type
 - run `composer require laravel/sail --dev`
 - run `php artisan sail:install`
 ### Windows
-1. run `'[ -f sail ] && bash sail || bash C:/path-to-project/vendor/bin/sail'`
+1. run `doskey '[ -f sail ] && bash sail || bash C:/path-to-project/vendor/bin/sail'`
 2. run `exit`
 ### Linux
 1. run `nano ~/.bashrc`
