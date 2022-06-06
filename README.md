@@ -24,15 +24,16 @@ Our ultimate goal is to deliver a scalable/flexible custom solution for all type
 ### Linux
 1. run `nano ~/.bashrc`
 2. paste `alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'` at the bottom of the file
-3. press `ctrl + o` and press `Enter` afterwrds, then `ctrl + x`
+3. press `ctrl + o` and press `Enter` afterwards, then `ctrl + x`
 4. run `exit`
 
 ### Mac
 1. run `nano ~/.zshrc`
 2. paste `alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'` at the bottom of the file
-3. press `ctrl + o` and press `Enter` afterwrds, then `ctrl + x`
+3. press `ctrl + o` and press `Enter` afterwards, then `ctrl + x`
 4. run `exit`
 
+Open a new terminal and type `sail` to make sure the command has been added.
 ### Docker Setup
 - make sure WAMP/XAMPP/LAMP or any application using port **80** and post **5432** is not running
 
