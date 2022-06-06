@@ -13,10 +13,11 @@ Our ultimate goal is to deliver a scalable/flexible custom solution for all type
 - Install [composer](https://getcomposer.org/download/)
 - Clone this repository (if you have not already done that)
 - In the project directory run `composer install`
-- run `composer require laravel/sail --dev`
-- run `php artisan sail:install`
+
 
 ### Laravel Sail Setup
+- run `composer require laravel/sail --dev`
+- run `php artisan sail:install`
 ### Windows
 1. run `'[ -f sail ] && bash sail || bash C:/path-to-project/vendor/bin/sail'`
 2. run `exit`
