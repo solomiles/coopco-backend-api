@@ -40,4 +40,5 @@ Our ultimate goal is to deliver a scalable/flexible custom solution for all type
 - open a new terminal and run `sail up`, wait for the images to download
 - When the download is done, open localhost on your browser to confirm that the site is up and running 🚀
 
-Subsequently just run `sail up` to start the application ✨
+
+**PS:** Subsequently just run `sail up` to start the application ✨
