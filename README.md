@@ -43,3 +43,9 @@ Open a new terminal and type `sail` to make sure the command has been added.
 
 
 **PS:** Subsequently just run `sail up` to start the application ✨
+
+## PostgreSQL Dynamic Schema Architecture
+Every cooperative will own their own db schema to help us separate and organize data properly.
+The auth token sent to the web frontend when an admin logs in will be composed using the admin object, the object will contain the schema that admin belongs to.
+Now, when a request is made we can pull the schema from that admin object and modify the app config to use the specified schema.
+This is how we can acheive that, `config(['database.connections.pgsql.search_path' => 'schema-name']);`.
