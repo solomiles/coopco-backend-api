@@ -44,8 +44,21 @@ Open a new terminal and type `sail` to make sure the command has been added.
 
 **PS:** Subsequently just run `sail up` to start the application ✨
 
+---
 ## PostgreSQL Dynamic Schema Architecture
 Every cooperative will own their own db schema to help us separate and organize data properly.
 The auth token sent to the web frontend when an admin logs in will be composed using the admin object, the object will contain the schema that admin belongs to.
 Now, when a request is made we can pull the schema from that admin object and modify the app config to use the specified schema.
 This is how we can acheive that, `config(['database.connections.pgsql.search_path' => 'schema-name']);`.
+
+### Setting up the database
+-	Download a database management client like [TablePlus](https://tableplus.com/download), [Sequel Pro](https://www.sqlprostudio.com/), [DBeaver](https://dbeaver.io/download/), or any other one you're comfortable with.
+-	If you were able to setup Laravel Sail create a new connection and fill on the following credentials:
+	1. host: 127.0.0.1
+	2. port: 5432
+	3. username: sail
+	4. password: password
+	5. database: laravel
+- When you have successfuly connected, create a new database titled `coopco` and switch to it
+
+- If you were not able to setup Laravel Sail and you installed postgres separately, you'll need to start the postgres server and connect using the provided credentials when you setup postgres. Use the db client to connect and create the `coopco` database.
