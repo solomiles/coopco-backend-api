@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Countries;
+use App\Models\Country;
 
 class CountriesSeeder extends Seeder
 {
@@ -16,7 +16,7 @@ class CountriesSeeder extends Seeder
     public function run()
     {
         //
-        Countries::create([
+        Country::create([
             'name' => 'Nigeria',
         ]);
     }

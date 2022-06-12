@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Cooperative extends Model
 {
     use HasFactory;
+
+    protected $table = 'cooperative';
 }

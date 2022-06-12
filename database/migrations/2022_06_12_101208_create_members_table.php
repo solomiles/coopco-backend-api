@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->char('firstname', 255);
-            $table->char('lastname', 255);
-            $table->char('othernames', 255);
-            $table->char('email', 255)->unique();
-            $table->char('password', 255);
-            $table->char('gender', 50);
-            $table->foreignId('cooperative_id')->constrained('cooperative');
-            $table->char('phone', 50);
-            $table->char('photo', 255)->nullable();
+            $table->string('firstname');
+            $table->string('lastname');
+            $table->string('othernames')->nullable();
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('gender')->nullable();
+            $table->foreignId('cooperative_id')->constrained('cooperative')->onDelete('cascade');
+            $table->string('phone')->nullable();
+            $table->string('photo')->default('default-member.png');
             $table->timestamps();
         });
     }

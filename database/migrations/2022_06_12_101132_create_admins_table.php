@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->char('name', 255);
-            $table->char('username', 255);
-            $table->char('password', 255);
-            $table->char('type', 255);
-            $table->char('schema', 255);
-            $table->foreignId('cooperative_id')->constrained('cooperative');
+            $table->string('name');
+            $table->string('username');
+            $table->string('password');
+            $table->string('type')->default('admin');
+            $table->string('photo')->default('default-admin.png');
+            $table->foreignId('cooperative_id')->constrained('cooperative')->onDelete('cascade');
             $table->timestamps();
         });
     }

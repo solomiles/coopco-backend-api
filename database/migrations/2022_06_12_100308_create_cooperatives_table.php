@@ -15,15 +15,15 @@ return new class extends Migration
     {
         Schema::create('cooperative', function (Blueprint $table) {
             $table->id();
-            $table->char('name', 255);
-            $table->text('description');
-            $table->char('logo', 255)->nullable();
-            $table->foreignId('country_id')->constrained('countries');
-            $table->char('location', 255);
-            $table->foreignId('plan_id')->constrained('plans');
-            $table->char('type', 255);
-            $table->json('customizations');
-            $table->boolean('active');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('logo')->default('default-logo.png');
+            $table->foreignId('country_id')->constrained('countries')->onDelete('cascade');
+            $table->string('location')->nullable();
+            $table->foreignId('plan_id')->constrained('plans')->onDelete('cascade');
+            $table->string('type');
+            $table->json('customizations')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
     }

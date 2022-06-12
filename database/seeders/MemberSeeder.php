@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Member;
+use Illuminate\Support\Facades\Hash;
 
 class MemberSeeder extends Seeder
 {
@@ -17,14 +18,12 @@ class MemberSeeder extends Seeder
     {
         //
         Member::create([
-            'firstname' => '',
-            'lastname' => '',
-            'othernames' => '',
-            'email' => '',
-            'password' => '',
-            'gender' => '',
-            'cooperative_id' => '',
-            'phone' => '',
+            'firstname' => 'Ikenna',
+            'lastname' => 'Adewale',
+            'othernames' => 'Musa',
+            'email' => 'test@coopco.com.ng',
+            'password' => Hash::make('123456'),
+            'cooperative_id' => 1
         ]);
     }
 }

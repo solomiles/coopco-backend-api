@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
@@ -17,12 +18,10 @@ class AdminSeeder extends Seeder
     {
         //
         Admin::create([
-            'name' => 'COOPCO',
+            'name' => 'Test Cooperative Admin',
             'username' => 'admin',
-            'password' => '123456',
-            'type' => 'default',
-            'schema' => 'example',
-            'cooperative_id' => '1',
+            'password' => Hash::make('123456'),
+            'cooperative_id' => 1,
         ]);
     }
 }

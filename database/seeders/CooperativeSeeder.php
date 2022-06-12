@@ -17,14 +17,10 @@ class CooperativeSeeder extends Seeder
     {
         //
         Cooperative::create([
-            'name' => '',
-            'description' => '',
-            'country_id' => '',
-            'location' => '',
-            'plan_id' => '',
-            'type' => '',
-            'customizations' => '',
-            'active' => '',
+            'name' => 'Test Cooperative',
+            'country_id' => '1',
+            'plan_id' => '1',
+            'type' => 'university_cooperative'
         ]);
     }
 }
