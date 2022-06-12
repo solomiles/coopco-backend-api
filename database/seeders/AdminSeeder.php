@@ -20,8 +20,7 @@ class AdminSeeder extends Seeder
         Admin::create([
             'name' => 'Test Cooperative Admin',
             'username' => 'admin',
-            'password' => Hash::make('123456'),
-            'cooperative_id' => 1,
+            'password' => Hash::make('123456')
         ]);
     }
 }

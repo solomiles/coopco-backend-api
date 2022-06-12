@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('gender')->nullable();
-            $table->foreignId('cooperative_id')->constrained('cooperative')->onDelete('cascade');
             $table->string('phone')->nullable();
             $table->string('photo')->default('default-member.png');
             $table->timestamps();

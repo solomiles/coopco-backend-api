@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('type')->default('admin');
             $table->string('photo')->default('default-admin.png');
-            $table->foreignId('cooperative_id')->constrained('cooperative')->onDelete('cascade');
             $table->timestamps();
         });
     }

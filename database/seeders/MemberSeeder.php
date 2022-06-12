@@ -22,8 +22,7 @@ class MemberSeeder extends Seeder
             'lastname' => 'Adewale',
             'othernames' => 'Musa',
             'email' => 'test@coopco.com.ng',
-            'password' => Hash::make('123456'),
-            'cooperative_id' => 1
+            'password' => Hash::make('123456')
         ]);
     }
 }
