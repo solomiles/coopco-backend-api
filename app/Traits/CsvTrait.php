@@ -2,34 +2,27 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\Request;
-
-trait ImageTrait
+trait CsvTrait
 {
 
     /**
-     * @param Request $request
-     * @return $this|false|string
+     * Set the structure of the CSV file
+     *
+     * @param array $columns
+     * @param string $name
+     *
+     * @return void
      */
-    public function verifyAndUpload(Request $request, $fieldname = 'image', $directory = 'images')
+    public function setCSVStructure($columns, $name)
     {
+        $filename = public_path("files/" . $name . ".csv");
+        $handle = fopen($filename, 'w');
 
-        if ($request->hasFile($fieldname)) {
-
-            if (!$request->file($fieldname)->isValid()) {
-
-                flash('Invalid Image!')->error()->important();
-
-                return redirect()->back()->withInput();
-
-            }
-
-            return $request->file($fieldname)->store($directory, 'public');
-
+        if (fputcsv($handle, $columns) == false) {
+            return false;
+        } else {
+            return true;
         }
-
-        return null;
-
     }
 
 }
