@@ -11,11 +11,11 @@ trait CsvTrait
      * @param array $columns
      * @param string $name
      *
-     * @return void
+     * @return boolean (true|false)
      */
     public function setCSVStructure($columns, $name)
     {
-        $filename = public_path("files/" . $name . ".csv");
+        $filename = public_path("storage/files/" . $name . ".csv");
         $handle = fopen($filename, 'w');
 
         if (fputcsv($handle, $columns) == false) {
@@ -24,5 +24,4 @@ trait CsvTrait
             return true;
         }
     }
-
 }
