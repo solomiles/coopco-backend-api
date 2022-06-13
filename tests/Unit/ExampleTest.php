@@ -2,10 +2,12 @@
 
 namespace Tests\Unit;
 
+use App\Traits\CsvTrait;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
 {
+    use CsvTrait;
     /**
      * A basic test example.
      *
@@ -13,6 +15,6 @@ class ExampleTest extends TestCase
      */
     public function test_that_true_is_true()
     {
-        $this->assertTrue(true);
+        $this->assertTrue($this->setCSVStructure(['Name', 'Email', 'Number'], 'wisdom-cooperative'));
     }
 }
