@@ -25,10 +25,6 @@ trait CsvTrait
             $handle = fopen($filename, 'w');
         }
 
-        if (fputcsv($handle, $columns) == false) {
-            return false;
-        } else {
-            return true;
-        }
+        return fputcsv($handle, $columns) != false;
     }
 }
