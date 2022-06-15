@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 trait CsvTrait
 {
 
@@ -26,5 +27,21 @@ trait CsvTrait
         }
 
         return fputcsv($handle, $columns) != false;
+    }
+
+    /**
+     * Provides download url for generated CSV template
+     *
+     * @param string $fileName
+     * @return (string | boolean)
+     */
+    public function downloadCSVTemplate($fileName)
+    {
+        $file = 'public/csv-templates/' . $fileName;
+
+        if (Storage::exists($file)) {
+            return URL::to('/') . Storage::url($file);
+        }
+        return false;
     }
 }
