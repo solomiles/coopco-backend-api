@@ -37,7 +37,7 @@ trait CsvTrait
      */
     public function downloadCSVTemplate($fileName)
     {
-        $file = 'public/csv-templates/' . $fileName;
+        $file = 'public/csv-templates/' . $fileName . '.csv';
 
         if (Storage::exists($file)) {
             return URL::to('/') . Storage::url($file);
