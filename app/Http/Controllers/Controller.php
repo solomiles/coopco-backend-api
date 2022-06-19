@@ -15,14 +15,14 @@ class Controller extends BaseController
 
     public function index(Request $request)
     {
-        $file = fopen(public_path('storage/csv-templates/wisdom-cooperative.csv'), 'r');
+        // $file = public_path('storage/csv-templates/wisdom-cooperative.csv');
 
         // return $this->setCSVStructure(['Name', 'Email', 'Number'], 'wisdom-cooperative');
-        $rules = [
-            'name' => 'empty',
-            'email' => 'required|email',
-            'number' => 'required|numeric|digits:10',
-        ];
-        $this->validateCSVFile($rules, $file);
+        // $rules = [
+        //     'Name' => 'required|regex:/^[\pL\s]+$/u',
+        //     'Email' => 'required|email',
+        //     'Number' => 'required|numeric|digits:11',
+        // ];
+        // dd($this->validateCSVFile($rules, $file));
     }
 }
