@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Library\CSVValidator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 trait CsvTrait
@@ -43,5 +44,28 @@ trait CsvTrait
             return URL::to('/') . Storage::url($file);
         }
         return false;
+    }
+
+    /**
+     * Validate CSV file data
+     *
+     * @param array $rules
+     * @param object $csvFile
+     *
+     * @return array
+     */
+    public function validateCSVFile($rules, $csvFile)
+    {
+        try {
+            $csvValidator = (new CSVValidator)->open($csvFile, $rules);
+
+            if ($csvValidator->fails()) {
+                return $csvValidator->getErrors();
+            }
+        } catch (\Throwable $th) {
+            logger($th);
+        }
+
+        return $csvValidator->getData();
     }
 }
