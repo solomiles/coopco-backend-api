@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             CountriesSeeder::class,
             CooperativeSeeder::class,
             AdminSeeder::class,
-            MemberSeeder::class
+            MemberSeeder::class,
+            EmailCredentialsSeeder::class
         ]);
     }
 }
