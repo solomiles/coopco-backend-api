@@ -62,10 +62,11 @@ trait CsvTrait
             if ($csvValidator->fails()) {
                 return $csvValidator->getErrors();
             }
-        } catch (\Throwable $th) {
-            logger($th);
-        }
 
-        return $csvValidator->getData();
+            return $csvValidator->getData();
+        } catch (\Throwable$th) {
+            logger($th);
+            return [$th->getMessage()];
+        }
     }
 }

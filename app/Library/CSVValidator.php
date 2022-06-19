@@ -27,10 +27,20 @@ class CSVValidator
         $this->csvData = [];
         $this->setRules($rules);
 
-        $csvData = $this->getCsvAsArray($csvPath);
+        $csvData = $this->getCsvAsArray($csvPath)['formattedData'];
+        $csvKeys = $this->getCsvAsArray($csvPath)['rowKeys'];
+
+        $rulesKeys = array_keys($rules);
+
+        sort($rulesKeys);
+        sort($csvKeys);
+
+        if ($csvKeys != $rulesKeys) {
+            throw new \Exception('Invalid CSV File, please download template.');
+        }
 
         if (empty($csvData)) {
-            throw new \Exception('No data found.');
+            throw new \Exception('The CSV file is empty.');
         }
 
         $newCsvData = [];
@@ -84,7 +94,7 @@ class CSVValidator
             }
         }
 
-        return $formattedData;
+        return ['formattedData' => $formattedData, 'rowKeys' => $rowKeys];
     }
 
     public function fails()
