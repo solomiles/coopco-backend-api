@@ -16,13 +16,19 @@ class CRUDController extends Controller
 {
     use EmailTrait;
 
+    /**
+     * Create new member
+     * @param Request $request
+     * 
+     * @return Response
+     */
     public function create(Request $request) {
 
-        $validator = $this->createValidator($request);
-        if($validator->fails()) {
+        $validate = $this->validator($request);
+        if($validate->fails()) {
             return response([
                 'status' => 400,
-                'errors' => $validator->errors()->messages()
+                'errors' => $validate->errors()->messages()
             ], 400);
         }
 
@@ -35,7 +41,7 @@ class CRUDController extends Controller
         if(!$send) {
             return response([
                 'status' => false,
-                'message' => 'Something has gone wrong, please try again'
+                'message' => g('500')
             ], 500);
         }
 
@@ -48,7 +54,13 @@ class CRUDController extends Controller
         ], 201);
     }
 
-    public function createValidator($request) {
+    /**
+     * Member data validator
+     * @param Request $request
+     * 
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    public function validator($request) {
 
         $genders = ['male', 'female', 'other'];
 
@@ -65,6 +77,13 @@ class CRUDController extends Controller
         ]);
     }
 
+    /**
+     * Store member data
+     * @param Request $request
+     * @param Member $member
+     * 
+     * @return void
+     */
     public function store($request, $member) {
         $member->firstname = ucfirst($request->firstname);
         $member->lastname = ucfirst($request->lastname);
@@ -76,6 +95,12 @@ class CRUDController extends Controller
         $member->save();
     }
 
+    /**
+     * Send welcome email to new member
+     * @param Member $member
+     * 
+     * @return bool
+     */
     public function sendWelcomeEmail($member) {
 
         $emailCredentials = EmailCredentials::firstOrFail();

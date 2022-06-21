@@ -51,3 +51,14 @@ function randomPassword() {
     $alphaNumChar = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&()<,>?';
     return substr(str_shuffle($alphaNumChar), 0, 8);
 }
+
+/**
+ * Global variable accessor helper
+ * @param string $constant - Constant key in config/global.php
+ * 
+ * @return string
+ */
+function g($constant) {
+    return config('global.'.$constant);
+
+}

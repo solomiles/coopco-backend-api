@@ -62,7 +62,7 @@ class Handler extends ExceptionHandler
         if($e instanceof QueryException) {
             return response([
                 'status' => false,
-                'message' => 'Something has gone wrong, please try again'
+                'message' => g('500')
             ], 500);
         }
     }
