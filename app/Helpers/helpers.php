@@ -1,5 +1,7 @@
 <?php
 
+$SERVER_ERROR = 'NNNOs';
+
 /**
  * Swicth psql DB schema
  *
@@ -40,6 +42,11 @@ function setEmailCredentials($emailConfig) {
     ]]);
 }
 
+/**
+ * Random password generator
+ * 
+ * @return string
+ */
 function randomPassword() {
     $alphaNumChar = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&()<,>?';
     return substr(str_shuffle($alphaNumChar), 0, 8);

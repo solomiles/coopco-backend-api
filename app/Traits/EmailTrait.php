@@ -23,17 +23,11 @@ trait EmailTrait {
         try {
             Mail::to($recipientEmail)->send(new SendSingleEmail($subject, $data, $template));
 
-            return [
-                'status' => true,
-                'message' => 'Email Sent'
-            ];
+            return true;
         } catch (\Throwable $th) {
             Log::error($th);
 
-            return [
-                'status' => false,
-                'message' => $th->getMessage()
-            ];
+            return false;
         }
 
     }
