@@ -30,6 +30,11 @@ class CRUDController extends Controller
         $member->gender = $request->gender;
 
         $member->save();
+
+        return response([
+            'status' => true,
+            'message' => 'Member Created'
+        ], 201);
     }
 
     public function createValidator($request) {
