@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -52,7 +53,7 @@ class Handler extends ExceptionHandler
     /**
      * Render the exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function render($request, Throwable $e)
@@ -64,6 +65,14 @@ class Handler extends ExceptionHandler
                 'status' => false,
                 'message' => g('500')
             ], 500);
+        }
+        
+        // Handle 401 HttpResponseException exceptions
+        if($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401) {
+            return response([
+                'success' => false, 
+                'message' => 'Unathorized'
+            ],  401);
         }
     }
 }
