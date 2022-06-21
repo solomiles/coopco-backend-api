@@ -39,3 +39,8 @@ function setEmailCredentials($emailConfig) {
         'name' => $emailConfig['from_name'],
     ]]);
 }
+
+function randomPassword() {
+    $alphaNumChar = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&()<,>?';
+    return substr(str_shuffle($alphaNumChar), 0, 8);
+}

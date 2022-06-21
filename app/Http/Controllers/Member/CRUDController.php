@@ -21,15 +21,7 @@ class CRUDController extends Controller
         }
 
         $member = new Member();
-
-        $member->firstname = ucfirst($request->firstname);
-        $member->lastname = ucfirst($request->lastname);
-        $member->othernames = ucfirst($request->othernames ?? '');
-        $member->email = strtolower($request->email);
-        $member->phone = $request->phone;
-        $member->gender = $request->gender;
-
-        $member->save();
+        $this->store($request, $member);
 
         return response([
             'status' => true,
@@ -52,5 +44,16 @@ class CRUDController extends Controller
                 Rule::in($genders)
             ]
         ]);
+    }
+
+    public function store($request, $member) {
+        $member->firstname = ucfirst($request->firstname);
+        $member->lastname = ucfirst($request->lastname);
+        $member->othernames = ucfirst($request->othernames ?? '');
+        $member->email = strtolower($request->email);
+        $member->phone = $request->phone;
+        $member->gender = $request->gender;
+
+        $member->save();
     }
 }
