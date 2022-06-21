@@ -19,10 +19,11 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('othernames')->nullable();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('gender')->nullable();
             $table->string('phone')->nullable();
             $table->string('photo')->default('default-member.png');
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }
