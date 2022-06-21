@@ -7,8 +7,10 @@
 return [
 
 	// HTTP 500 Response Message
-	'500' => 'Something has gone wrong, please try again'
+	'SERVER_ERROR' => 'Something has gone wrong, please try again',
 
+	// Unathorized HTTP Response Message
+	'UNAUTHORIZED' => 'Unathorized'
 ]
 
 ?>

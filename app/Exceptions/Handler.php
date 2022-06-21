@@ -63,7 +63,7 @@ class Handler extends ExceptionHandler
         if($e instanceof QueryException) {
             return response([
                 'status' => false,
-                'message' => g('500')
+                'message' => g('SERVER_ERROR')
             ], 500);
         }
         
@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
         if($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401) {
             return response([
                 'success' => false, 
-                'message' => 'Unathorized'
+                'message' => g('UNAUTHORIZED')
             ],  401);
         }
     }

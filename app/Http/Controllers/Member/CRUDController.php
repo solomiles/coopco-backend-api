@@ -41,7 +41,7 @@ class CRUDController extends Controller
         if(!$send) {
             return response([
                 'status' => false,
-                'message' => g('500')
+                'message' => g('SERVER_ERROR')
             ], 500);
         }
 
