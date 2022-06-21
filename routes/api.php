@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Member\CRUDController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +23,17 @@ Route::prefix('admin')->group(function() {
     // Login
     Route::post('login', [AuthController::class, 'login']);
 
+    /* PROTECTED */
+    Route::group(['middleware' => 'auth'], function () {
+
+
+       // Member
+       Route::prefix('member')->group(function() {
+
+            // Create
+            Route::post('create', [CRUDController::class, 'create']);
+       });
+    });
 });
 
 /******************************/
