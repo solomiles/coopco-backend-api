@@ -11,27 +11,29 @@ trait EmailTrait {
     /**
      * Creates single email send method
      *
-     * @param array $data
+     * @param string $subject - Email Subject
      * @param string $recipientEmail
-     * @return json
+     * @param array $data
+     * @param string $template - Email blade template
+     * 
+     * @return array
      */
-
-    public function sendSingleEmail($recipientEmail, $data) {
+    public function sendSingleEmail($subject, $recipientEmail, $data, $template) {
 
         try {
-            Mail::to($recipientEmail)->send(new SendSingleEmail($data));
+            Mail::to($recipientEmail)->send(new SendSingleEmail($subject, $data, $template));
 
-            return response()->json([
+            return [
                 'status' => true,
                 'message' => 'Email Sent'
-            ], 200);
+            ];
         } catch (\Throwable $th) {
             Log::error($th);
 
-            return response()->json([
+            return [
                 'status' => false,
-                'message' => 'Internal Server Error'
-            ], 500);
+                'message' => $th->getMessage()
+            ];
         }
 
     }
