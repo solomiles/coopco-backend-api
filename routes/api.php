@@ -28,7 +28,7 @@ Route::prefix('admin')->group(function() {
 
 
        // Member
-       Route::prefix('member')->group(function() {
+       Route::prefix('members')->group(function() {
 
             // Create
             Route::post('create', [CRUDController::class, 'create']);
