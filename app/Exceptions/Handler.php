@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -73,6 +74,14 @@ class Handler extends ExceptionHandler
                 'success' => false, 
                 'message' => g('UNAUTHORIZED')
             ],  401);
+        }
+
+        // Handle 404 NotFoundHttpException exceptions
+        if($e instanceof NotFoundHttpException) {
+            return response([
+                'success' => false, 
+                'message' => g('NOT_FOUND')
+            ],  404);
         }
     }
 }

@@ -10,7 +10,10 @@ return [
 	'SERVER_ERROR' => 'Something has gone wrong, please try again',
 
 	// Unathorized HTTP Response Message
-	'UNAUTHORIZED' => 'Unathorized'
+	'UNAUTHORIZED' => 'Unathorized',
+
+	// Not Found HTTP Response Message
+	'NOT_FOUND' => 'The requested resource was not found',
 ]
 
 ?>
