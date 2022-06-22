@@ -121,11 +121,11 @@ class CRUDController extends Controller
 
     /**
      * Soft Delete member data
-     * @param int $member_id Member ID
+     * @param int $memberId Member ID
      * @return json
      */
-    public function delete($member_id) {
-        $member = Member::findOrFail($member_id);
+    public function delete($memberId) {
+        $member = Member::findOrFail($memberId);
 
         $member->delete();
 
@@ -137,11 +137,11 @@ class CRUDController extends Controller
 
     /**
      * Deactivate member
-     * @param int $member_id Member ID
+     * @param int $memberId Member ID
      * @return json
      */
-    public function deactivate($member_id) {
-        $member = Member::findOrFail($member_id);
+    public function deactivate($memberId) {
+        $member = Member::findOrFail($memberId);
 
         $member->active = false;
         $member->save();

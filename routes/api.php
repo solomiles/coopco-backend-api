@@ -33,9 +33,9 @@ Route::prefix('admin')->group(function() {
             // Create
             Route::post('create', [CRUDController::class, 'create']);
             // Delete
-            Route::delete('delete/{$member_id}', [CRUDController::class, 'delete']);
+            Route::delete('delete/{memberId}', [CRUDController::class, 'delete']);
             // Deactivate
-            Route::patch('deactivate/{$member_id}', [CRUDController::class, 'deactivate']);
+            Route::patch('deactivate/{memberId}', [CRUDController::class, 'deactivate']);
        });
     });
 });
