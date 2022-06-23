@@ -125,7 +125,7 @@ class MemberController extends Controller
     /**
      * Soft Delete member data
      * @param int $memberId Member ID
-     * @return json
+     * @return Response
      */
     public function delete($memberId) {
         $member = Member::findOrFail($memberId);
@@ -139,19 +139,29 @@ class MemberController extends Controller
     }
 
     /**
-     * Deactivate member
+     * Activate/Deactivate member
      * @param int $memberId Member ID
-     * @return json
+     * @param bool $status Set to true to activate, false to deactivate
+     * 
+     * @return Response
      */
-    public function deactivate($memberId) {
+    public function activate($memberId, $status = true) {
+        
+        if($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
+            return response([
+                'status' => true,
+                'message' => g('NOT_FOUND')
+            ], 404);
+        }
+
         $member = Member::findOrFail($memberId);
 
-        $member->active = false;
+        $member->active = $status;
         $member->save();
 
         return response([
             'status' => true,
-            'message' => 'Member Deactivated'
+            'message' => $status === true ? 'Member Activated' : 'Member Deactivated'
         ], 200);
     }
 }

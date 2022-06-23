@@ -36,8 +36,8 @@ Route::prefix('admin')->group(function() {
             // Delete
             Route::delete('delete/{memberId}', [MemberController::class, 'delete']);
 
-            // Deactivate
-            Route::patch('deactivate/{memberId}', [MemberController::class, 'deactivate']);
+            // Activate/Deactivate
+            Route::patch('activate/{memberId}/{status?}', [MemberController::class, 'activate']);
        });
     });
 });
