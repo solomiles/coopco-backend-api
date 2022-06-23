@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -59,9 +60,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-
+        
         // Handle Query/DB Related exceptions
-        if($e instanceof QueryException) {
+        if($e instanceof QueryException || $e instanceof BindingResolutionException) {
             return response([
                 'status' => false,
                 'message' => g('SERVER_ERROR')

@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Member\CRUDController;
+use App\Http\Controllers\Admin\Member\CRUDController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,8 +32,10 @@ Route::prefix('admin')->group(function() {
 
             // Create
             Route::post('create', [CRUDController::class, 'create']);
+
             // Delete
             Route::delete('delete/{memberId}', [CRUDController::class, 'delete']);
+
             // Deactivate
             Route::patch('deactivate/{memberId}', [CRUDController::class, 'deactivate']);
        });

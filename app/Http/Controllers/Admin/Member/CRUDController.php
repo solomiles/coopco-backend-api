@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Member;
+namespace App\Http\Controllers\Admin\Member;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cooperative;
@@ -27,7 +27,7 @@ class CRUDController extends Controller
         $validate = $this->validator($request);
         if($validate->fails()) {
             return response([
-                'status' => 400,
+                'status' => false,
                 'errors' => $validate->errors()->messages()
             ], 400);
         }
@@ -48,9 +48,12 @@ class CRUDController extends Controller
         $member->password = Hash::make($member->password);
         $member->save();
 
+        unset($member->password);
+
         return response([
             'status' => true,
-            'message' => 'Member Created'
+            'message' => 'Member Created',
+            'data' => $member
         ], 201);
     }
 
