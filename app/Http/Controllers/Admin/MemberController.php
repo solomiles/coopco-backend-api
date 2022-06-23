@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Member;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cooperative;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class CRUDController extends Controller
+class MemberController extends Controller
 {
     use EmailTrait;
 

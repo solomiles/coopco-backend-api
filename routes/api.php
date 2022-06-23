@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\Member\CRUDController;
+use App\Http\Controllers\Admin\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,13 +31,13 @@ Route::prefix('admin')->group(function() {
        Route::prefix('members')->group(function() {
 
             // Create
-            Route::post('create', [CRUDController::class, 'create']);
+            Route::post('create', [MemberController::class, 'create']);
 
             // Delete
-            Route::delete('delete/{memberId}', [CRUDController::class, 'delete']);
+            Route::delete('delete/{memberId}', [MemberController::class, 'delete']);
 
             // Deactivate
-            Route::patch('deactivate/{memberId}', [CRUDController::class, 'deactivate']);
+            Route::patch('deactivate/{memberId}', [MemberController::class, 'deactivate']);
        });
     });
 });
