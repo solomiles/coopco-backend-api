@@ -19,7 +19,7 @@ class CRUDController extends Controller
     /**
      * Create new member
      * @param Request $request
-     * 
+     *
      * @return Response
      */
     public function create(Request $request) {
@@ -34,7 +34,7 @@ class CRUDController extends Controller
 
         $member = new Member();
         $this->store($request, $member);
-        
+
         $member->password = randomPassword();
 
         $send = $this->sendWelcomeEmail($member);
@@ -57,7 +57,7 @@ class CRUDController extends Controller
     /**
      * Member data validator
      * @param Request $request
-     * 
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validator($request) {
@@ -81,7 +81,7 @@ class CRUDController extends Controller
      * Store member data
      * @param Request $request
      * @param Member $member
-     * 
+     *
      * @return void
      */
     public function store($request, $member) {
@@ -98,7 +98,7 @@ class CRUDController extends Controller
     /**
      * Send welcome email to new member
      * @param Member $member
-     * 
+     *
      * @return bool
      */
     public function sendWelcomeEmail($member) {
@@ -117,5 +117,38 @@ class CRUDController extends Controller
         ];
 
         return $this->sendSingleEmail($emailSubject, $member->email, $emailData, $emailTemplate);
+    }
+
+    /**
+     * Soft Delete member data
+     * @param int $memberId Member ID
+     * @return json
+     */
+    public function delete($memberId) {
+        $member = Member::findOrFail($memberId);
+
+        $member->delete();
+
+        return response([
+            'status' => true,
+            'message' => 'Member Deleted'
+        ], 200);
+    }
+
+    /**
+     * Deactivate member
+     * @param int $memberId Member ID
+     * @return json
+     */
+    public function deactivate($memberId) {
+        $member = Member::findOrFail($memberId);
+
+        $member->active = false;
+        $member->save();
+
+        return response([
+            'status' => true,
+            'message' => 'Member Deactivated'
+        ], 200);
     }
 }
