@@ -3,8 +3,8 @@
 namespace App\Traits;
 
 use App\Jobs\SendEmail;
-use App\Mail\SendBulkEmail;
 use App\Mail\SendSingleEmail;
+use App\Models\Cooperative;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -39,9 +39,9 @@ trait EmailTrait
     /**
      * Send bulk email
      *
-     * @param string $subject
+     * @param string $subject - Email Subject
      * @param array $recipientData
-     * @param string $template
+     * @param string $template - Email blade template
      *
      * @return array
      */
@@ -55,6 +55,28 @@ trait EmailTrait
         } catch (\Throwable$th) {
             Log::error($th);
 
+            return false;
+        }
+    }
+
+    /**
+     * Send feedback email to admin when an error occurs when sending emails
+     *
+     * @param string $failedMailsubject - Email Subject for attempted email
+     * @param array $data
+     *
+     * @return boolean - true on success | false on failure
+     */
+    public function feedBackEmail($failedMailsubject, $emails)
+    {
+        $subject = 'Error sending emails!';
+        $template = 'failed-emails';
+        $cooperative = (Cooperative::firstOrFail())->name;
+        $data = ['emails' => $emails, 'cooperative' => $cooperative, 'subject' => $failedMailsubject];
+
+        if ($this->sendSingleEmail($subject, 'wisdomntui@gmail.com', $data, $template)) {
+            return true;
+        } else {
             return false;
         }
     }
