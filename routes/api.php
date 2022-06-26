@@ -38,6 +38,9 @@ Route::prefix('admin')->group(function() {
 
             // Activate/Deactivate
             Route::patch('activate/{memberId}/{status?}', [MemberController::class, 'activate']);
+
+            // Update member
+            Route::put('update/{memberId}', [MemberController::class, 'update']);
        });
     });
 });
