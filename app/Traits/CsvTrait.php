@@ -49,15 +49,18 @@ trait CsvTrait
     /**
      * Validate CSV file data
      *
-     * @param array $rules
-     * @param object $csvFile
+     * @param array $rules - An array of standard laravel rules
+     * @param \Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile $csvFile - file pointer object gotten from $request->file()
      *
      * @return array
      */
     public function validateCSVFile($rules, $csvFile)
     {
         try {
-            $csvValidator = (new CSVValidator)->open($csvFile, $rules);
+            // Get the uploaded file's real path
+            $realPath = $csvFile->getRealPath();
+
+            $csvValidator = (new CSVValidator)->open($realPath, $rules);
 
             if ($csvValidator->fails()) {
                 return $csvValidator->getErrors();

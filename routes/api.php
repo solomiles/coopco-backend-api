@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,12 +11,11 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
-
+ */
 
 /** COOPERATIVE ADMIN ROUTES **/
 
-Route::prefix('admin')->group(function() {
+Route::prefix('admin')->group(function () {
 
     // Login
     Route::post('login', [AuthController::class, 'login']);
@@ -26,9 +23,8 @@ Route::prefix('admin')->group(function() {
     /* PROTECTED */
     Route::group(['middleware' => 'auth'], function () {
 
-
-       // Member
-       Route::prefix('members')->group(function() {
+        // Member
+        Route::prefix('members')->group(function () {
 
             // Create
             Route::post('create', [MemberController::class, 'create']);
@@ -38,7 +34,7 @@ Route::prefix('admin')->group(function() {
 
             // Activate/Deactivate
             Route::patch('activate/{memberId}/{status?}', [MemberController::class, 'activate']);
-       });
+        });
     });
 });
 
