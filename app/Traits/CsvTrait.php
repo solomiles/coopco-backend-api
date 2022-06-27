@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Library\CSVValidator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 trait CsvTrait
@@ -43,5 +44,32 @@ trait CsvTrait
             return URL::to('/') . Storage::url($file);
         }
         return false;
+    }
+
+    /**
+     * Validate CSV file data
+     *
+     * @param array $rules - An array of standard laravel rules
+     * @param \Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile $csvFile - file pointer object gotten from $request->file()
+     *
+     * @return array
+     */
+    public function validateCSVFile($rules, $csvFile)
+    {
+        try {
+            // Get the uploaded file's real path
+            $realPath = $csvFile->getRealPath();
+
+            $csvValidator = (new CSVValidator)->open($realPath, $rules);
+
+            if ($csvValidator->fails()) {
+                return $csvValidator->getErrors();
+            }
+
+            return $csvValidator->getData();
+        } catch (\Throwable$th) {
+            logger($th);
+            return [$th->getMessage()];
+        }
     }
 }
