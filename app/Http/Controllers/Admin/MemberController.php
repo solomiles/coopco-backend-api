@@ -22,10 +22,11 @@ class MemberController extends Controller
      *
      * @return Response
      */
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         $validate = $this->validator($request);
-        if($validate->fails()) {
+        if ($validate->fails()) {
             return response([
                 'status' => false,
                 'errors' => $validate->errors()->messages()
@@ -38,7 +39,7 @@ class MemberController extends Controller
         $member->password = randomPassword();
 
         $send = $this->sendWelcomeEmail($member);
-        if(!$send) {
+        if (!$send) {
             return response([
                 'status' => false,
                 'message' => g('SERVER_ERROR')
@@ -63,7 +64,8 @@ class MemberController extends Controller
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator($request) {
+    public function validator($request)
+    {
 
         $genders = ['male', 'female', 'other'];
 
@@ -87,7 +89,8 @@ class MemberController extends Controller
      *
      * @return void
      */
-    public function store($request, $member) {
+    public function store($request, $member)
+    {
         $member->firstname = ucfirst($request->firstname);
         $member->lastname = ucfirst($request->lastname);
         $member->othernames = ucfirst($request->othernames ?? '');
@@ -104,7 +107,8 @@ class MemberController extends Controller
      *
      * @return bool
      */
-    public function sendWelcomeEmail($member) {
+    public function sendWelcomeEmail($member)
+    {
 
         $emailCredentials = EmailCredentials::firstOrFail();
         setEmailCredentials($emailCredentials);
@@ -127,7 +131,8 @@ class MemberController extends Controller
      * @param int $memberId Member ID
      * @return Response
      */
-    public function delete($memberId) {
+    public function delete($memberId)
+    {
         $member = Member::findOrFail($memberId);
 
         $member->delete();
@@ -145,9 +150,10 @@ class MemberController extends Controller
      *
      * @return Response
      */
-    public function activate($memberId, $status = true) {
+    public function activate($memberId, $status = true)
+    {
 
-        if($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
+        if ($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
             return response([
                 'status' => true,
                 'message' => g('NOT_FOUND')
@@ -170,7 +176,8 @@ class MemberController extends Controller
      *
      * @return json
      */
-    public function getAll() {
+    public function getAll()
+    {
 
         $members = Member::paginate(20);
 
@@ -186,13 +193,14 @@ class MemberController extends Controller
      * @param int $memberId Member ID
      * @return Response
      */
-    public function getOne($memberId) {
+    public function getOne($memberId)
+    {
 
         $validator = Validator::make(['memberId' => $memberId], [
             'memberId' => 'required|int',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response([
                 'status' => 404,
                 'errors' => g('NOT_FOUND')
@@ -205,6 +213,32 @@ class MemberController extends Controller
             'status' => true,
             'message' => 'Successful',
             'data' => $member
+        ], 200);
+    }
+
+    /**
+     * Update member
+     * @param Request $request
+     * @param int $memberId Member Id
+     * @return Response
+     */
+    public function update(Request $request, $memberId)
+    {
+
+        $validate = $this->validator($request);
+        if ($validate->fails()) {
+            return response([
+                'status' => false,
+                'errors' => $validate->errors()->messages()
+            ], 400);
+        }
+
+        $member = Member::findOrFail($memberId);
+        $this->store($request, $member);
+
+        return response([
+            'status' => true,
+            'message' => 'Member Updated'
         ], 200);
     }
 }
