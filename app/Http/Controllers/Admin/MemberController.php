@@ -61,20 +61,21 @@ class MemberController extends Controller
     /**
      * Member data validator
      * @param Request $request
+     * @param array $customRules
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator($request)
+    public function validator($request, $customRules = [])
     {
 
         $genders = ['male', 'female', 'other'];
 
         return Validator::make($request->all(), [
-            'firstname' => 'required|string|max:50',
-            'lastname' => 'required|string|max:50',
-            'othernames' => 'string|max:100',
-            'email' => 'required|email:filter,rfc,dns|unique:members',
-            'phone' => 'required|max:15',
+            'firstname' => $customRules['firstname'] ?? 'required|string|max:50',
+            'lastname' => $customRules['lastname'] ?? 'required|string|max:50',
+            'othernames' => $customRules['othernames'] ?? 'string|max:100',
+            'email' => $customRules['email'] ?? 'required|email:filter,rfc,dns|unique:members',
+            'phone' => $customRules['phone'] ?? 'required|max:15',
             'gender' => [
                 'required',
                 Rule::in($genders)
@@ -224,8 +225,26 @@ class MemberController extends Controller
      */
     public function update(Request $request, $memberId)
     {
+        // Validate parameters
+        $validator = Validator::make(['memberId' => $memberId], [
+            'memberId' => 'required|int',
+        ]);
 
-        $validate = $this->validator($request);
+        if ($validator->fails()) {
+            return response([
+                'status' => 404,
+                'errors' => g('NOT_FOUND')
+            ], 404);
+        }
+
+        // Validate form fields
+        $validate = $this->validator($request, [
+            'email' => [
+                'required','email:filter,rfc,dns',
+                Rule::unique('members')->ignore($memberId)
+            ]
+        ]);
+
         if ($validate->fails()) {
             return response([
                 'status' => false,
