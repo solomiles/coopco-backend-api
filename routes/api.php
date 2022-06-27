@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +36,13 @@ Route::prefix('admin')->group(function () {
 
             // Activate/Deactivate
             Route::patch('activate/{memberId}/{status?}', [MemberController::class, 'activate']);
-        });
+
+            // Get all members
+            Route::get('/', [MemberController::class, 'getAll']);
+
+            // Get one member
+            Route::get('/{memberId}', [MemberController::class, 'getOne']);
+       });
     });
 });
 

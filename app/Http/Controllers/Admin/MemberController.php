@@ -142,11 +142,11 @@ class MemberController extends Controller
      * Activate/Deactivate member
      * @param int $memberId Member ID
      * @param bool $status Set to true to activate, false to deactivate
-     * 
+     *
      * @return Response
      */
     public function activate($memberId, $status = true) {
-        
+
         if($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
             return response([
                 'status' => true,
@@ -162,6 +162,49 @@ class MemberController extends Controller
         return response([
             'status' => true,
             'message' => $status === true ? 'Member Activated' : 'Member Deactivated'
+        ], 200);
+    }
+
+    /**
+     * Get all members in batch of 20
+     *
+     * @return json
+     */
+    public function getAll() {
+
+        $members = Member::paginate(20);
+
+        return response([
+            'status' => true,
+            'message' => 'Successful',
+            'data' => $members
+        ], 200);
+    }
+
+    /**
+     * Get one member
+     * @param int $memberId Member ID
+     * @return Response
+     */
+    public function getOne($memberId) {
+
+        $validator = Validator::make(['memberId' => $memberId], [
+            'memberId' => 'required|int',
+        ]);
+
+        if($validator->fails()) {
+            return response([
+                'status' => 404,
+                'errors' => g('NOT_FOUND')
+            ], 404);
+        }
+
+        $member = Member::findOrFail($memberId);
+
+        return response([
+            'status' => true,
+            'message' => 'Successful',
+            'data' => $member
         ], 200);
     }
 }
