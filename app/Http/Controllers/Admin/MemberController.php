@@ -188,6 +188,17 @@ class MemberController extends Controller
      */
     public function getOne($memberId) {
 
+        $validator = Validator::make(['memberId' => $memberId], [
+            'memberId' => 'required|int',
+        ]);
+
+        if($validator->fails()) {
+            return response([
+                'status' => 404,
+                'errors' => g('NOT_FOUND')
+            ], 404);
+        }
+
         $member = Member::findOrFail($memberId);
 
         return response([
