@@ -42,6 +42,9 @@ Route::prefix('admin')->group(function () {
 
             // Get one member
             Route::get('/{memberId}', [MemberController::class, 'getOne']);
+            
+            // Update member
+            Route::put('update/{memberId}', [MemberController::class, 'update']);
        });
     });
 });

@@ -22,10 +22,11 @@ class MemberController extends Controller
      *
      * @return Response
      */
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         $validate = $this->validator($request);
-        if($validate->fails()) {
+        if ($validate->fails()) {
             return response([
                 'status' => false,
                 'errors' => $validate->errors()->messages()
@@ -38,7 +39,7 @@ class MemberController extends Controller
         $member->password = randomPassword();
 
         $send = $this->sendWelcomeEmail($member);
-        if(!$send) {
+        if (!$send) {
             return response([
                 'status' => false,
                 'message' => g('SERVER_ERROR')
@@ -60,19 +61,21 @@ class MemberController extends Controller
     /**
      * Member data validator
      * @param Request $request
+     * @param array $customRules
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator($request) {
+    public function validator($request, $customRules = [])
+    {
 
         $genders = ['male', 'female', 'other'];
 
         return Validator::make($request->all(), [
-            'firstname' => 'required|string|max:50',
-            'lastname' => 'required|string|max:50',
-            'othernames' => 'string|max:100',
-            'email' => 'required|email:filter,rfc,dns|unique:members',
-            'phone' => 'required|max:15',
+            'firstname' => $customRules['firstname'] ?? 'required|string|max:50',
+            'lastname' => $customRules['lastname'] ?? 'required|string|max:50',
+            'othernames' => $customRules['othernames'] ?? 'string|max:100',
+            'email' => $customRules['email'] ?? 'required|email:filter,rfc,dns|unique:members',
+            'phone' => $customRules['phone'] ?? 'required|max:15',
             'gender' => [
                 'required',
                 Rule::in($genders)
@@ -87,7 +90,8 @@ class MemberController extends Controller
      *
      * @return void
      */
-    public function store($request, $member) {
+    public function store($request, $member)
+    {
         $member->firstname = ucfirst($request->firstname);
         $member->lastname = ucfirst($request->lastname);
         $member->othernames = ucfirst($request->othernames ?? '');
@@ -104,7 +108,8 @@ class MemberController extends Controller
      *
      * @return bool
      */
-    public function sendWelcomeEmail($member) {
+    public function sendWelcomeEmail($member)
+    {
 
         $emailCredentials = EmailCredentials::firstOrFail();
         setEmailCredentials($emailCredentials);
@@ -127,7 +132,8 @@ class MemberController extends Controller
      * @param int $memberId Member ID
      * @return Response
      */
-    public function delete($memberId) {
+    public function delete($memberId)
+    {
         $member = Member::findOrFail($memberId);
 
         $member->delete();
@@ -145,9 +151,10 @@ class MemberController extends Controller
      *
      * @return Response
      */
-    public function activate($memberId, $status = true) {
+    public function activate($memberId, $status = true)
+    {
 
-        if($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
+        if ($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
             return response([
                 'status' => true,
                 'message' => g('NOT_FOUND')
@@ -170,7 +177,8 @@ class MemberController extends Controller
      *
      * @return json
      */
-    public function getAll() {
+    public function getAll()
+    {
 
         $members = Member::paginate(20);
 
@@ -186,13 +194,14 @@ class MemberController extends Controller
      * @param int $memberId Member ID
      * @return Response
      */
-    public function getOne($memberId) {
+    public function getOne($memberId)
+    {
 
         $validator = Validator::make(['memberId' => $memberId], [
             'memberId' => 'required|int',
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             return response([
                 'status' => 404,
                 'errors' => g('NOT_FOUND')
@@ -205,6 +214,50 @@ class MemberController extends Controller
             'status' => true,
             'message' => 'Successful',
             'data' => $member
+        ], 200);
+    }
+
+    /**
+     * Update member
+     * @param Request $request
+     * @param int $memberId Member Id
+     * @return Response
+     */
+    public function update(Request $request, $memberId)
+    {
+        // Validate parameters
+        $validator = Validator::make(['memberId' => $memberId], [
+            'memberId' => 'required|int',
+        ]);
+
+        if ($validator->fails()) {
+            return response([
+                'status' => 404,
+                'errors' => g('NOT_FOUND')
+            ], 404);
+        }
+
+        // Validate form fields
+        $validate = $this->validator($request, [
+            'email' => [
+                'required','email:filter,rfc,dns',
+                Rule::unique('members')->ignore($memberId)
+            ]
+        ]);
+
+        if ($validate->fails()) {
+            return response([
+                'status' => false,
+                'errors' => $validate->errors()->messages()
+            ], 400);
+        }
+
+        $member = Member::findOrFail($memberId);
+        $this->store($request, $member);
+
+        return response([
+            'status' => true,
+            'message' => 'Member Updated'
         ], 200);
     }
 }
