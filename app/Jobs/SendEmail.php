@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Mail\SendBulkEmail;
 use App\Models\EmailCredentials;
 use App\Traits\EmailTrait;
 use Illuminate\Bus\Queueable;
@@ -28,6 +27,8 @@ class SendEmail implements ShouldQueue
     /**
      * Create a new job instance.
      *
+     * @param array $details - An array that holds recipient_data, email subject and email template
+     *
      * @return void
      */
     public function __construct($details)
@@ -50,12 +51,15 @@ class SendEmail implements ShouldQueue
         $failedMailData = [];
 
         foreach ($recipientData as $email => $data) {
-            try {
-                $mail = new SendBulkEmail($this->details['subject'], $data, $this->details['template']);
-                Mail::to($email)->send($mail);
-            } catch (\Exception$ex) {
+            if (!$this->sendSingleEmail($this->details['subject'], $email, $data, $this->details['template'])) {
                 $failedMailData[$email] = $data;
             }
+            // try {
+            //     $mail = new SendBulkEmail($this->details['subject'], $data, $this->details['template']);
+            //     Mail::to($email)->send($mail);
+            // } catch (\Exception$ex) {
+            //     $failedMailData[$email] = $data;
+            // }
         }
 
         // Check if there are failed mails in order to requeue or fail job manually
