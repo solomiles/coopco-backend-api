@@ -1,6 +1,6 @@
 <?php
 
-$SERVER_ERROR = 'NNNOs';
+use Illuminate\Support\Facades\DB;
 
 /**
  * Swicth psql DB schema
@@ -14,6 +14,7 @@ function switchSchema($request, $schema = null) {
 	$schema = $schema ? $schema : $request->getHttpHost();
 
 	config(['database.connections.pgsql.search_path' => $schema]);
+    DB::purge();
 }
 
 /**
@@ -24,8 +25,6 @@ function switchSchema($request, $schema = null) {
  * @return void
  */
 function setEmailCredentials($emailConfig) {
-
-
     config(['mail.mailers.'.$emailConfig['mailer'] => [
         'transport' => $emailConfig['mailer'],
         'host' => $emailConfig['host'],
@@ -60,5 +59,14 @@ function randomPassword() {
  */
 function g($constant) {
     return config('global.'.$constant);
+}
 
+/**
+ * Create schema if it doesn't exist
+ * @param string $schemaName
+ * 
+ * @return void
+ */
+function createSchema($schemaName) {
+    DB::unprepared('CREATE SCHEMA IF NOT EXISTS '.$schemaName);
 }
