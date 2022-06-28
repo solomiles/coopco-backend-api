@@ -54,12 +54,6 @@ class SendEmail implements ShouldQueue
             if (!$this->sendSingleEmail($this->details['subject'], $email, $data, $this->details['template'])) {
                 $failedMailData[$email] = $data;
             }
-            // try {
-            //     $mail = new SendBulkEmail($this->details['subject'], $data, $this->details['template']);
-            //     Mail::to($email)->send($mail);
-            // } catch (\Exception$ex) {
-            //     $failedMailData[$email] = $data;
-            // }
         }
 
         // Check if there are failed mails in order to requeue or fail job manually
