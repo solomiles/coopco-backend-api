@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required',
+            'email' => 'required',
             'password' => 'required',
         ]);
 
@@ -36,10 +36,10 @@ class AuthController extends Controller
             'message' => 'Invalid Credentials',
         ];
 
-        $username = $request->username;
+        $email = $request->email;
         $password = $request->password;
 
-        $member = Member::where('username', $username)->first();
+        $member = Member::where('email', $email)->first();
 
         if (!$member) {
             return response()->json($invalidCredentialsResponse, 401);
