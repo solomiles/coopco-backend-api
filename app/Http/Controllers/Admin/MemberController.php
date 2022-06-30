@@ -260,4 +260,27 @@ class MemberController extends Controller
             'message' => 'Member Updated'
         ], 200);
     }
+
+    /**
+     * Search members
+     * @param Request $request
+     *
+     * @return json
+     */
+    public function search(Request $request)
+    {
+        $keyword = $request->get('keyword');
+        $member = Member::where('firstname', 'LIKE', '%'.$keyword.'%')
+                            ->orWhere('lastname', 'LIKE', '%'.$keyword.'%')
+                            ->orWhere('othernames', 'LIKE', '%'.$keyword.'%')
+                            ->orWhere('email', 'LIKE', '%'.$keyword.'%')
+                            ->orWhere('phone', 'LIKE', '%'.$keyword.'%')
+                            ->get();
+
+        return response([
+            'status' => true,
+            'message' => 'Successful',
+            'data' => $member
+        ], 200);
+    }
 }
