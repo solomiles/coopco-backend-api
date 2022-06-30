@@ -34,6 +34,8 @@ Artisan::command('schema:switch {schemaName?}', function(Request $request, $sche
 Artisan::command('schema:migrate {schemaName}', function(Request $request, $schemaName) {
     createSchema($schemaName);
     switchSchema($request, $schemaName);
+
+    echo "    Migrating $schemaName schema . . .\n";
     
     try {
         Artisan::call('migrate', ['--path' => '/database/migrations/'.$schemaName]);
@@ -44,9 +46,34 @@ Artisan::command('schema:migrate {schemaName}', function(Request $request, $sche
             echo "\n    $file";
         }
 
-        echo "\n\n    Migration complete for * $schemaName *\n";
+        echo "\n\n    Migration complete for $schemaName schema\n";
     } catch (\Throwable $th) {
         Log::error($th);
-        echo "    Could not migrate to * $schemaName *\n";
+        echo "    Could not migrate to $schemaName schema\n";
+    }
+});
+
+// Seed db classes in a specified folder for a specified schema
+Artisan::command('schema:seed {schemaName}', function(Request $request, $schemaName) {
+    createSchema($schemaName);
+    switchSchema($request, $schemaName);
+    
+    echo "    Seeding $schemaName schema . . .\n";
+
+    try {
+        $files = array_diff(scandir(base_path('database/seeders/'.$schemaName)), array('.', '..'));
+        
+        foreach($files as $file) {
+            $className = str_replace('.php', '', $file);
+
+            Artisan::call('db:seed', ['--class' => 'Database\Seeders\\'.$schemaName.'\\'.$className]);
+
+            echo "\n    $file seeded successfully";
+        }
+
+        echo "\n\n    Seeding complete for $schemaName schema\n";
+    } catch (\Throwable $th) {
+        Log::error($th);
+        echo "    Could not seed $schemaName schema\n";
     }
 });
