@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('gender')->nullable();
             $table->string('phone')->nullable();
             $table->string('photo')->default('default-member.png');
+            $table->string('remember_token')->nullable();
             $table->boolean('active')->default(true);
             $table->softDeletes();
             $table->timestamps();

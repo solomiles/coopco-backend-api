@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\MemberController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('admin')->group(function () {
 
     // Login
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login', [App\Http\Controllers\Admin\AuthController::class, 'login']);
 
     /* PROTECTED */
     Route::group(['middleware' => 'auth'], function () {
@@ -29,23 +27,23 @@ Route::prefix('admin')->group(function () {
         Route::prefix('members')->group(function () {
 
             // Create
-            Route::post('create', [MemberController::class, 'create']);
+            Route::post('create', [App\Http\Controllers\Admin\MemberController::class, 'create']);
 
             // Delete
-            Route::delete('delete/{memberId}', [MemberController::class, 'delete']);
+            Route::delete('delete/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'delete']);
 
             // Activate/Deactivate
-            Route::patch('activate/{memberId}/{status?}', [MemberController::class, 'activate']);
+            Route::patch('activate/{memberId}/{status?}', [App\Http\Controllers\Admin\MemberController::class, 'activate']);
 
             // Get all members
-            Route::get('/', [MemberController::class, 'getAll']);
+            Route::get('/', [App\Http\Controllers\Admin\MemberController::class, 'getAll']);
 
             // Get one member
-            Route::get('/{memberId}', [MemberController::class, 'getOne']);
-            
+            Route::get('/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'getOne']);
+
             // Update member
-            Route::put('update/{memberId}', [MemberController::class, 'update']);
-       });
+            Route::put('update/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'update']);
+        });
     });
 });
 
@@ -59,6 +57,18 @@ Route::prefix('superadmin')->group(function () {
 
     // Login
     Route::post('login', [App\Http\Controllers\Superadmin\AuthController::class, 'login']);
+
+/******************************/
+
+
+
+
+/** COOPERATIVE MEMBER ROUTES **/
+
+Route::prefix('member')->group(function () {
+
+    // Login
+    Route::post('login', [App\Http\Controllers\Member\AuthController::class, 'login']);
 
 });
 
