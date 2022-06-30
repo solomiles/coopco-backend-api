@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Superadmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
+use App\Models\Superadmin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -39,20 +39,21 @@ class AuthController extends Controller
         $username = $request->username;
         $password = $request->password;
 
-        $admin = Admin::where('username', $username)->first();
+        switchSchema($request, 'main');
+        $superadmin = Superadmin::where('username', $username)->first();
 
-        if (!$admin) {
+        if (!$superadmin) {
             return response()->json($invalidCredentialsResponse, 401);
         }
 
-        if (!Hash::check($password, $admin->password)) {
+        if (!Hash::check($password, $superadmin->password)) {
             return response()->json($invalidCredentialsResponse, 401);
         }
 
-        $token = $admin->createToken('Cooperative Admin Token');
+        $token = $superadmin->createToken('Coopco Admin Token');
        
         $data = [
-            'admin' => $admin,
+            'superadmin' => $superadmin,
             'token' => $token->accessToken,
             'token_type' => 'Bearer',
             'token_expires' => Carbon::parse(

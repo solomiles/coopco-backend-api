@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('superadmins', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('username');
+            $table->string('username')->unique();
             $table->string('password');
             $table->string('photo')->default('default-admin.png');
             $table->softDeletes();

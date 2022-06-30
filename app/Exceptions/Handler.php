@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use BadMethodCallException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -60,27 +61,31 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        
+
         // Handle Query/DB Related exceptions
-        if($e instanceof QueryException || $e instanceof BindingResolutionException) {
+        if (
+            $e instanceof QueryException
+            || $e instanceof BindingResolutionException
+            || $e instanceof BadMethodCallException
+        ) {
             return response([
                 'status' => false,
                 'message' => g('SERVER_ERROR')
             ], 500);
         }
-        
+
         // Handle 401 HttpResponseException exceptions
-        if($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401) {
+        if ($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401) {
             return response([
-                'success' => false, 
+                'success' => false,
                 'message' => g('UNAUTHORIZED')
             ],  401);
         }
 
         // Handle 404 NotFoundHttpException exceptions
-        if($e instanceof NotFoundHttpException) {
+        if ($e instanceof NotFoundHttpException) {
             return response([
-                'success' => false, 
+                'success' => false,
                 'message' => g('NOT_FOUND')
             ],  404);
         }

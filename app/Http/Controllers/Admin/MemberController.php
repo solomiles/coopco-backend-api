@@ -203,7 +203,7 @@ class MemberController extends Controller
 
         if ($validator->fails()) {
             return response([
-                'status' => 404,
+                'status' => false,
                 'errors' => g('NOT_FOUND')
             ], 404);
         }
@@ -232,7 +232,7 @@ class MemberController extends Controller
 
         if ($validator->fails()) {
             return response([
-                'status' => 404,
+                'status' => false,
                 'errors' => g('NOT_FOUND')
             ], 404);
         }
