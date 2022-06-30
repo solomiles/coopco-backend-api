@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /*
@@ -22,12 +23,13 @@ Artisan::command('inspire', function () {
 
 // Create psql db schema if it doesn't exist, then Switch to schema
 Artisan::command('schema:switch {schemaName?}', function(Request $request, $schemaName = 'main') {
-    createSchema($schemaName);
-    switchSchema($request, $schemaName);
+    print_r(Artisan::call('passport:install'));
+    // createSchema($schemaName);
+    // switchSchema($request, $schemaName);
     
-    echo "- - - - - - - - - - - - - -\n";
-    echo " DB Schema switched to * $schemaName * \n";
-    echo "- - - - - - - - - - - - - -";
+    // echo "- - - - - - - - - - - - - -\n";
+    // echo " DB Schema switched to * $schemaName * \n";
+    // echo "- - - - - - - - - - - - - -";
 })->purpose('Switch psql db schema');
 
 // Migrate files in a specified folder for a specified schema
@@ -35,8 +37,21 @@ Artisan::command('schema:migrate {schemaName}', function(Request $request, $sche
     createSchema($schemaName);
     switchSchema($request, $schemaName);
 
-    echo "    Migrating $schemaName schema . . .\n";
+    echo "    Copying OAuth2 tables to $schemaName schema . . .\n";
+
+    $oauth2Tables = ['oauth_access_tokens', 'oauth_auth_codes', 'oauth_clients', 'oauth_personal_access_clients', 'oauth_refresh_tokens'];
+
+    // Copy OAuth2 tables to switched schema
+    foreach($oauth2Tables as $table) {
+        DB::unprepared('SELECT * INTO '.$table.' FROM public.'.$table);
+        echo "\n    Copied $table";
+    }
+
+    echo "\n    Copied all OAuth2 tables to $schemaName schema . . .\n";
     
+    // Migrate tables in schema folder
+    echo "\n    Migrating $schemaName schema . . .\n";
+
     try {
         Artisan::call('migrate', ['--path' => '/database/migrations/'.$schemaName]);
 
