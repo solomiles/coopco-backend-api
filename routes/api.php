@@ -49,8 +49,6 @@ Route::prefix('admin')->group(function () {
 
 /******************************/
 
-
-
 /** COOPCO SUPERADMIN ROUTES **/
 
 Route::prefix('superadmin')->group(function () {
@@ -58,10 +56,8 @@ Route::prefix('superadmin')->group(function () {
     // Login
     Route::post('login', [App\Http\Controllers\Superadmin\AuthController::class, 'login']);
 
+});
 /******************************/
-
-
-
 
 /** COOPERATIVE MEMBER ROUTES **/
 
