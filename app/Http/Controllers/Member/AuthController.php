@@ -26,13 +26,13 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response([
-                'status' => 400,
+                'status' => false,
                 'errors' => $validator->errors()->messages(),
             ], 400);
         }
 
         $invalidCredentialsResponse = [
-            'status' => 401,
+            'status' => false,
             'message' => 'Invalid Credentials',
         ];
 
@@ -61,7 +61,7 @@ class AuthController extends Controller
         ];
 
         return response([
-            'status' => 200,
+            'status' => true,
             'message' => 'Login Successful',
             'data' => $data,
         ], 200);
