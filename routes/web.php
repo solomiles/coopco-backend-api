@@ -16,3 +16,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+/** PASSWORD RESET ROUTE FOR MEMBERS **/
+
+Route::name('member.')->prefix('member')->group(function () {
+    Route::get('reset-password/{token}', [App\Http\Controllers\Member\AuthController::class, 'resetPassword'])->name('reset-password');
+});
+
+/******************************/
