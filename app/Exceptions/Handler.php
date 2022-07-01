@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use BadMethodCallException;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -83,7 +84,10 @@ class Handler extends ExceptionHandler
         }
 
         // Handle 404 NotFoundHttpException exceptions
-        if ($e instanceof NotFoundHttpException) {
+        if (
+            $e instanceof NotFoundHttpException
+            || $e instanceof ModelNotFoundException
+        ) {
             return response([
                 'success' => false,
                 'message' => g('NOT_FOUND')
