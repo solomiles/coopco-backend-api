@@ -114,7 +114,7 @@ class AuthController extends Controller
 
     /**
      * Render password reset form
-     * @param Request $request - Request object
+     * @param string $token - The password reset token
      *
      * @return Response
      */
@@ -132,7 +132,7 @@ class AuthController extends Controller
         // Check if token is expired
         $resetToken = PasswordResetToken::firstWhere('token', $token);
 
-        if ($resetToken->created_at->diffInMinutes(now()) > 30) {
+        if ($resetToken->created_at->diffInMinutes(now()) > 50) {
             return view('password-reset.token-error', ['errors' => 'The token is expired.']);
         }
 
@@ -140,7 +140,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Render password reset form
+     * Reset password
      * @param Request $request - Request object
      *
      * @return Response
@@ -148,7 +148,7 @@ class AuthController extends Controller
     public function reset(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'token' => 'required|string|exists:members,remember_token',
+            'token' => 'required|string|exists:password_reset_tokens',
             'password' => 'required|confirmed',
         ]);
 
@@ -158,12 +158,19 @@ class AuthController extends Controller
 
         // Check if token is expired
         $resetToken = PasswordResetToken::firstWhere('token', $request->token);
-
-        if ($resetToken->created_at->diffInMinutes(now()) > 30) {
+        if ($resetToken->created_at->diffInMinutes(now()) > 80) {
             $resetToken->delete();
             return view('password-reset.token-error', ['errors' => 'The token is expired.']);
         }
 
-        return view('password-reset.password-reset');
+        // Update password
+        $member = Member::where('email', $resetToken->email)->first();
+        $member->password = Hash::make($request->password);
+        $member->save();
+
+        // Delete current token
+        $resetToken->delete();
+
+        return redirect()->route('member.password-success');
     }
 }

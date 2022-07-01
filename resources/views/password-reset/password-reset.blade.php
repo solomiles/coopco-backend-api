@@ -8,20 +8,21 @@
 </head>
 <body>
     <div style="margin: auto;">
-    <form action="" method="post">
-
+    <form action="{{ route('member.reset') }}" method="post">
+        @csrf
         @if($errors->any())
             {{ implode('', $errors->all('<div>:message</div>')) }}
         @endif
 
         <h4>Please enter new password and confirm it</h4>
+        <input type="hidden" name="token" value="{{ request()->token }}">
         <div>
             <label for="">Password</label>
             <input type="password" name="password" id="">
         </div>
         <div>
-            <label for="">Verify Password</label>
-            <input type="password" name="password_verify" id="">
+            <label for="">Confirm Password</label>
+            <input type="password" name="password_confirmation" id="">
         </div>
         <div>
             <button type="submit">Submit</button>
