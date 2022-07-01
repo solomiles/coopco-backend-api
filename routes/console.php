@@ -23,13 +23,12 @@ Artisan::command('inspire', function () {
 
 // Create psql db schema if it doesn't exist, then Switch to schema
 Artisan::command('schema:switch {schemaName?}', function(Request $request, $schemaName = 'main') {
-    print_r(Artisan::call('passport:install'));
-    // createSchema($schemaName);
-    // switchSchema($request, $schemaName);
+    createSchema($schemaName);
+    switchSchema($request, $schemaName);
     
-    // echo "- - - - - - - - - - - - - -\n";
-    // echo " DB Schema switched to * $schemaName * \n";
-    // echo "- - - - - - - - - - - - - -";
+    echo "- - - - - - - - - - - - - -\n";
+    echo " DB Schema switched to * $schemaName * \n";
+    echo "- - - - - - - - - - - - - -";
 })->purpose('Switch psql db schema');
 
 // Migrate files in a specified folder for a specified schema
