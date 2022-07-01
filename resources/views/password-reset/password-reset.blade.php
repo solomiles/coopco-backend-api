@@ -9,6 +9,11 @@
 <body>
     <div style="margin: auto;">
     <form action="" method="post">
+
+        @if($errors->any())
+            {{ implode('', $errors->all('<div>:message</div>')) }}
+        @endif
+
         <h4>Please enter new password and confirm it</h4>
         <div>
             <label for="">Password</label>

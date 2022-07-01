@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use App\Models\EmailCredentials;
 use App\Models\Member;
+use App\Models\PasswordResetToken;
 use App\Traits\EmailTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -91,18 +92,19 @@ class AuthController extends Controller
         }
 
         // Generate token
-        $token = bin2hex(random_bytes(5));
+        $token = bin2hex(random_bytes(3)) . time();
 
         // Update member data with new token
-        $member = Member::where('email', $request->email)->first();
-        $member->remember_token = $token;
-        $member->save();
+        $resetToken = new PasswordResetToken();
+        $resetToken->token = $token;
+        $resetToken->email = $request->email;
+        $resetToken->save();
 
         // Send email to user
         $emailCredentials = EmailCredentials::firstOrFail();
         setEmailCredentials($emailCredentials);
 
-        $this->sendSingleEmail('Password Reset', $member->email, ['token' => $token], 'password-reset');
+        $this->sendSingleEmail('Password Reset', $request->email, ['token' => $token], 'password-reset');
 
         return response([
             'status' => true,
@@ -116,10 +118,11 @@ class AuthController extends Controller
      *
      * @return Response
      */
-    public function resetPassword(Request $request, $token)
+    public function resetPassword($token)
     {
+
         $validator = Validator::make(['token' => $token], [
-            'token' => 'required|string|exists:members,remember_token',
+            'token' => 'required|string|exists:password_reset_tokens',
         ]);
 
         if ($validator->fails()) {
@@ -127,12 +130,37 @@ class AuthController extends Controller
         }
 
         // Check if token is expired
-        $member = Member::where('remember_token', $request->token)->first();
+        $resetToken = PasswordResetToken::firstWhere('token', $token);
 
-        // dd($member->updated_at, now()->addMinute(1));
-        $updatedAt = Carbon::parse($member->created_at);
+        if ($resetToken->created_at->diffInMinutes(now()) > 30) {
+            return view('password-reset.token-error', ['errors' => 'The token is expired.']);
+        }
 
-        if ($member->updated_at->diffInHours(now()) > 2) {
+        return view('password-reset.password-reset');
+    }
+
+    /**
+     * Render password reset form
+     * @param Request $request - Request object
+     *
+     * @return Response
+     */
+    public function reset(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|string|exists:members,remember_token',
+            'password' => 'required|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return view('password-reset.password-reset', ['errors' => $validator->errors()]);
+        }
+
+        // Check if token is expired
+        $resetToken = PasswordResetToken::firstWhere('token', $request->token);
+
+        if ($resetToken->created_at->diffInMinutes(now()) > 30) {
+            $resetToken->delete();
             return view('password-reset.token-error', ['errors' => 'The token is expired.']);
         }
 
