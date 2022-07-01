@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\SendSingleEmail;
+use App\Models\EmailCredentials;
 
 trait EmailTrait {
 
@@ -19,6 +20,9 @@ trait EmailTrait {
      * @return array
      */
     public function sendSingleEmail($subject, $recipientEmail, $data, $template) {
+
+        $emailConfig = EmailCredentials::firstOrFail();
+        setEmailCredentials($emailConfig);
 
         try {
             Mail::to($recipientEmail)->send(new SendSingleEmail($subject, $data, $template));
