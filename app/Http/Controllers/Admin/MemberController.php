@@ -110,10 +110,6 @@ class MemberController extends Controller
      */
     public function sendWelcomeEmail($member)
     {
-
-        $emailCredentials = EmailCredentials::firstOrFail();
-        setEmailCredentials($emailCredentials);
-
         $emailSubject = 'Welcome to Coopco';
         $emailTemplate = 'welcomeMember';
 

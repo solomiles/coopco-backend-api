@@ -21,7 +21,7 @@ Route::prefix('admin')->group(function () {
     Route::post('login', [App\Http\Controllers\Admin\AuthController::class, 'login']);
 
     /* PROTECTED */
-    Route::group(['middleware' => 'auth'], function () {
+    Route::group(['middleware' => 'admin-web-api'], function () {
 
         // Member
         Route::prefix('members')->group(function () {
