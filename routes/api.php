@@ -66,6 +66,8 @@ Route::prefix('member')->group(function () {
     // Login
     Route::post('login', [App\Http\Controllers\Member\AuthController::class, 'login']);
 
+    // Password Reset Email
+    Route::post('send-reset-email', [App\Http\Controllers\Member\AuthController::class, 'sendPasswordResetEmail']);
 });
 
 /******************************/
