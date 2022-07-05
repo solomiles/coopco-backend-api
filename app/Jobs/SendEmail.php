@@ -2,14 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\EmailCredentials;
 use App\Traits\EmailTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Mail;
 
 class SendEmail implements ShouldQueue
 {
@@ -43,15 +41,13 @@ class SendEmail implements ShouldQueue
      */
     public function handle()
     {
-        // Set email credentials for cooperative
-        $emailCredentials = EmailCredentials::firstOrFail();
-        setEmailCredentials($emailCredentials);
 
         $recipientData = $this->details['recipient_data'];
         $failedMailData = [];
 
         foreach ($recipientData as $email => $data) {
-            if (!$this->sendSingleEmail($this->details['subject'], $email, $data, $this->details['template'])) {
+            $sendMail = $this->sendSingleEmail($this->details['subject'], $email, $data, $this->details['template']);
+            if (!$sendMail) {
                 $failedMailData[$email] = $data;
             }
         }

@@ -44,7 +44,7 @@ trait EmailTrait
      * Send bulk email
      *
      * @param string $subject - Email Subject
-     * @param array $recipientData
+     * @param array $recipientData - [email=>[data], ...]
      * @param string $template - Email blade template
      *
      * @return array
