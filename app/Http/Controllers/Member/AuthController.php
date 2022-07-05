@@ -100,11 +100,13 @@ class AuthController extends Controller
         $resetToken->email = $request->email;
         $resetToken->save();
 
-        // Send email to user
-        $emailCredentials = EmailCredentials::firstOrFail();
-        setEmailCredentials($emailCredentials);
-
-        $this->sendSingleEmail('Password Reset', $request->email, ['token' => $token], 'password-reset');
+        $sendEmail = $this->sendSingleEmail('Password Reset', $request->email, ['token' => $token], 'password-reset');
+        if (!$sendEmail) {
+            return response([
+                'status' => false,
+                'message' => g('SERVER_ERROR')
+            ], 500);
+        }
 
         return response([
             'status' => true,
@@ -116,9 +118,9 @@ class AuthController extends Controller
      * Render password reset form
      * @param string $token - The password reset token
      *
-     * @return Response
+     * @return View
      */
-    public function resetPassword($token)
+    public function passwordResetForm($token)
     {
 
         $validator = Validator::make(['token' => $token], [
@@ -132,7 +134,7 @@ class AuthController extends Controller
         // Check if token is expired
         $resetToken = PasswordResetToken::firstWhere('token', $token);
 
-        if ($resetToken->created_at->diffInMinutes(now()) > 50) {
+        if ($resetToken->created_at->diffInMinutes(now()) > 30) {
             return view('password-reset.token-error', ['errors' => 'The token is expired.']);
         }
 
@@ -143,9 +145,9 @@ class AuthController extends Controller
      * Reset password
      * @param Request $request - Request object
      *
-     * @return Response
+     * @return View
      */
-    public function reset(Request $request)
+    public function updatePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'token' => 'required|string|exists:password_reset_tokens',

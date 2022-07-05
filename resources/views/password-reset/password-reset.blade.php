@@ -8,7 +8,7 @@
 </head>
 <body>
     <div style="margin: auto;">
-    <form action="{{ route('member.reset') }}" method="post">
+    <form action="{{ route('member.update-password') }}" method="post">
         @csrf
         @if($errors->any())
             {{ implode('', $errors->all('<div>:message</div>')) }}
