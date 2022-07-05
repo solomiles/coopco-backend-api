@@ -81,7 +81,7 @@ trait EmailTrait
         $cooperative = (Cooperative::firstOrFail())->name;
         $data = ['emails' => $emails, 'cooperative' => $cooperative, 'subject' => $failedMailsubject];
 
-        if ($this->sendSingleEmail($subject, 'wisdomntui@gmail.com', $data, $template)) {
+        if ($this->sendSingleEmail($subject, env('FAILED_EMAIL_ADDRESS'), $data, $template)) {
             return true;
         } else {
             return false;
