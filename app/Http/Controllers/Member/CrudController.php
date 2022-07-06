@@ -41,17 +41,14 @@ class CrudController extends AccessTokenController
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator($request, $customRules = [])
+    public function validator($request)
     {
-
-        $genders = ['male', 'female', 'other'];
-
         return Validator::make($request->all(), [
-            'firstname' => $customRules['firstname'] ?? 'required|string|max:50',
-            'lastname' => $customRules['lastname'] ?? 'required|string|max:50',
-            'othernames' => $customRules['othernames'] ?? 'string|max:100',
-            'phone' => $customRules['phone'] ?? 'required|max:15',
-            'photo' => $customRules['photo'] ?? 'required|base64image|base64mimes:png|base64max:1024',
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'othernames' => 'string|max:100',
+            'phone' => 'required|max:15',
+            'photo' => 'required|base64image|base64mimes:png,jpg,jpeg|base64max:6000',
         ]);
     }
 
