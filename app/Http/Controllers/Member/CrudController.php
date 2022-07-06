@@ -19,12 +19,17 @@ class CrudController extends Controller
      */
     public function store($request, $member)
     {
+        // Store profile photo
+        $photo = base64ToFile($request->input('photo'));
+        $photoName = $photo->hashName();
+        $photoPath = $photo->store('public/profile-photo');
+
+        // Update member data
         $member->firstname = ucfirst($request->firstname);
         $member->lastname = ucfirst($request->lastname);
         $member->othernames = ucfirst($request->othernames ?? '');
-        $member->email = strtolower($request->email);
         $member->phone = $request->phone;
-        $member->gender = $request->gender;
+        $member->photo = $photoName;
 
         $member->save();
     }
@@ -45,12 +50,8 @@ class CrudController extends Controller
             'firstname' => $customRules['firstname'] ?? 'required|string|max:50',
             'lastname' => $customRules['lastname'] ?? 'required|string|max:50',
             'othernames' => $customRules['othernames'] ?? 'string|max:100',
-            'email' => $customRules['email'] ?? 'required|email:filter,rfc,dns|unique:members',
             'phone' => $customRules['phone'] ?? 'required|max:15',
-            'gender' => [
-                'required',
-                Rule::in($genders),
-            ],
+            'photo' => $customRules['photo'] ?? 'required|base64image|base64mimes:png|base64max:1024',
         ]);
     }
 
@@ -63,9 +64,7 @@ class CrudController extends Controller
     public function update(Request $request, int $memberId)
     {
         // Validate form fields
-        $validate = $this->validator($request, [
-            'file' => 'file',
-        ]);
+        $validate = $this->validator($request);
 
         if ($validate->fails()) {
             return response([

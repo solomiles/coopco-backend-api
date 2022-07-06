@@ -73,7 +73,7 @@ Route::prefix('member')->group(function () {
     Route::post('reset-password', [App\Http\Controllers\Member\AuthController::class, 'sendPasswordResetEmail']);
 
     // Update member
-    Route::put('update/{memberId}', [App\Http\Controllers\Member\MemberController::class, 'update']);
+    Route::put('update/{memberId}', [App\Http\Controllers\Member\CrudController::class, 'update']);
 });
 
 /******************************/
