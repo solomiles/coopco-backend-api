@@ -11,6 +11,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use LogicException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
+use TypeError;
 
 class Handler extends ExceptionHandler
 {
@@ -66,6 +67,7 @@ class Handler extends ExceptionHandler
 
         // Handle Query/DB Related exceptions
         if (
+            $e instanceof TypeError ||
             $e instanceof QueryException
             || $e instanceof BindingResolutionException
             || $e instanceof BadMethodCallException
@@ -73,7 +75,7 @@ class Handler extends ExceptionHandler
         ) {
             return response([
                 'status' => false,
-                'message' => g('SERVER_ERROR')
+                'message' => g('SERVER_ERROR'),
             ], 500);
         }
 
@@ -81,8 +83,8 @@ class Handler extends ExceptionHandler
         if ($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401) {
             return response([
                 'success' => false,
-                'message' => g('UNAUTHORIZED')
-            ],  401);
+                'message' => g('UNAUTHORIZED'),
+            ], 401);
         }
 
         // Handle 404 NotFoundHttpException exceptions
@@ -92,8 +94,8 @@ class Handler extends ExceptionHandler
         ) {
             return response([
                 'success' => false,
-                'message' => g('NOT_FOUND')
-            ],  404);
+                'message' => g('NOT_FOUND'),
+            ], 404);
         }
     }
 }
