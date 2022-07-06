@@ -21,7 +21,7 @@ Route::prefix('admin')->group(function () {
     Route::post('login', [App\Http\Controllers\Admin\AuthController::class, 'login']);
 
     /* PROTECTED */
-    Route::group(['middleware' => 'admin-web-api'], function () {
+    Route::group(['middleware' => 'auth:admin-web-api'], function () {
 
         // Member
         Route::prefix('members')->group(function () {
@@ -34,6 +34,9 @@ Route::prefix('admin')->group(function () {
 
             // Activate/Deactivate
             Route::patch('activate/{memberId}/{status?}', [App\Http\Controllers\Admin\MemberController::class, 'activate']);
+
+            // Search member
+            Route::get('search', [App\Http\Controllers\Admin\MemberController::class, 'search']);
 
             // Get all members
             Route::get('/', [App\Http\Controllers\Admin\MemberController::class, 'getAll']);

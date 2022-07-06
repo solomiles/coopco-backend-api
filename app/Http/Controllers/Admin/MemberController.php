@@ -8,6 +8,7 @@ use App\Models\EmailCredentials;
 use App\Models\Member;
 use App\Traits\EmailTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -67,7 +68,6 @@ class MemberController extends Controller
      */
     public function validator($request, $customRules = [])
     {
-
         $genders = ['male', 'female', 'other'];
 
         return Validator::make($request->all(), [
@@ -149,7 +149,6 @@ class MemberController extends Controller
      */
     public function activate($memberId, $status = true)
     {
-
         if ($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
             return response([
                 'status' => true,
@@ -175,7 +174,6 @@ class MemberController extends Controller
      */
     public function getAll()
     {
-
         $members = Member::paginate(20);
 
         return response([
@@ -236,7 +234,7 @@ class MemberController extends Controller
         // Validate form fields
         $validate = $this->validator($request, [
             'email' => [
-                'required','email:filter,rfc,dns',
+                'required', 'email:filter,rfc,dns',
                 Rule::unique('members')->ignore($memberId)
             ]
         ]);
@@ -254,6 +252,29 @@ class MemberController extends Controller
         return response([
             'status' => true,
             'message' => 'Member Updated'
+        ], 200);
+    }
+
+    /**
+     * Search members
+     * @param Request $request
+     *
+     * @return json
+     */
+    public function search(Request $request)
+    {
+        $keyword = strtolower($request->get('keyword'));
+        $members = Member::where(DB::raw('lower(firstname)'), 'LIKE', '%' . $keyword . '%')
+            ->orWhere(DB::raw('lower(lastname)'), 'LIKE', '%' . $keyword . '%')
+            ->orWhere(DB::raw('lower(othernames)'), 'LIKE', '%' . $keyword . '%')
+            ->orWhere(DB::raw('lower(email)'), 'LIKE', '%' . $keyword . '%')
+            ->orWhere('phone', 'LIKE', '%' . $keyword . '%')
+            ->paginate(20);
+        
+        return response([
+            'status' => true,
+            'message' => 'Successful',
+            'data' => $members
         ], 200);
     }
 }
