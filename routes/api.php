@@ -84,8 +84,12 @@ Route::prefix('member')->group(function () {
     });
 =======
     // Update member
+<<<<<<< HEAD
     Route::put('update/{memberId}', [App\Http\Controllers\Member\MemberController::class, 'update']);
 >>>>>>> 30c9e6d (Add CrudController for member)
+=======
+    Route::put('update/{memberId}', [App\Http\Controllers\Member\CrudController::class, 'update']);
+>>>>>>> d6e6cdb (Install and test crazybooot/base64-validation validator library)
 });
 
 /******************************/
