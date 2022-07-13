@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Member;
 
-use App\Http\Controllers\Controller;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
 
-class CrudController extends Controller
+class CrudController extends AccessTokenController
 {
     /**
      * Store member data
