@@ -93,7 +93,7 @@ Route::prefix('member')->group(function () {
 >>>>>>> d6e6cdb (Install and test crazybooot/base64-validation validator library)
 =======
     /* PROTECTED */
-    Route::group(['middleware' => 'mobile-api'], function () {
+    Route::group(['middleware' => 'auth:mobile-api'], function () {
         // Update member
         Route::put('update/{memberId}', [App\Http\Controllers\Member\CrudController::class, 'update']);
     });
