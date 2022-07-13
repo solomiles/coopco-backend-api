@@ -73,7 +73,7 @@ Route::prefix('member')->group(function () {
     Route::post('reset-password', [App\Http\Controllers\Member\AuthController::class, 'sendPasswordResetEmail']);
 
     /* PROTECTED */
-    Route::group(['middleware' => 'mobile-api'], function () {
+    Route::group(['middleware' => 'auth:mobile-api'], function () {
         // Update member
         Route::put('update/{memberId}', [App\Http\Controllers\Member\CrudController::class, 'update']);
     });
