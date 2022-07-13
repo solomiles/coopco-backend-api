@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use LogicException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -68,6 +69,7 @@ class Handler extends ExceptionHandler
             $e instanceof QueryException
             || $e instanceof BindingResolutionException
             || $e instanceof BadMethodCallException
+            || $e instanceof LogicException
         ) {
             return response([
                 'status' => false,
