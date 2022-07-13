@@ -52,7 +52,7 @@ Artisan::command('schema:migrate {schemaName}', function(Request $request, $sche
     echo "\n    Migrating $schemaName schema . . .\n";
 
     try {
-        Artisan::call('migrate', ['--path' => base_path('database/migrations/'.$schemaName)]);
+        Artisan::call('migrate');
 
         $files = array_diff(scandir(base_path('database/migrations/'.$schemaName)), array('.', '..'));
 
