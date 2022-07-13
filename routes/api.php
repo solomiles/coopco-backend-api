@@ -77,6 +77,7 @@ Route::prefix('member')->group(function () {
     Route::post('reset-password', [App\Http\Controllers\Member\AuthController::class, 'sendPasswordResetEmail']);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /* PROTECTED */
     Route::group(['middleware' => 'auth:mobile-api'], function () {
         // Update member
@@ -90,6 +91,13 @@ Route::prefix('member')->group(function () {
 =======
     Route::put('update/{memberId}', [App\Http\Controllers\Member\CrudController::class, 'update']);
 >>>>>>> d6e6cdb (Install and test crazybooot/base64-validation validator library)
+=======
+    /* PROTECTED */
+    Route::group(['middleware' => 'mobile-api'], function () {
+        // Update member
+        Route::put('update/{memberId}', [App\Http\Controllers\Member\CrudController::class, 'update']);
+    });
+>>>>>>> f8da978 (Add route for updating member)
 });
 
 /******************************/
