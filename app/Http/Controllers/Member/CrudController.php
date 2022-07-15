@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -22,7 +23,7 @@ class CrudController extends AccessTokenController
         // Store profile photo
         $photo = base64ToFile($request->input('photo'));
         $photoName = $photo->hashName();
-        $photoPath = $photo->store('public/profile-photo');
+        $photo->store('public/members/photo');
 
         // Update member data
         $member->firstname = ucfirst($request->firstname);
@@ -30,6 +31,7 @@ class CrudController extends AccessTokenController
         $member->othernames = ucfirst($request->othernames ?? '');
         $member->phone = $request->phone;
         $member->photo = $photoName;
+        $member->password = Hash::make($request->password);
 
         $member->save();
     }
@@ -49,6 +51,7 @@ class CrudController extends AccessTokenController
             'othernames' => 'string|max:100',
             'phone' => 'required|max:15',
             'photo' => 'required|base64image|base64mimes:png,jpg,jpeg|base64max:6000',
+            'password' => 'required|confirmed',
         ]);
     }
 
