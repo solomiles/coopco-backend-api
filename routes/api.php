@@ -47,6 +47,10 @@ Route::prefix('admin')->group(function () {
             // Update member
             Route::put('update/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'update']);
         });
+
+        // Update Admin
+        Route::put('update/{adminId}', [App\Http\Controllers\Admin\CRUDController::class, 'update']);
+
     });
 });
 

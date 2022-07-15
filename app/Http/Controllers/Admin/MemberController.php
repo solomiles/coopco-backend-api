@@ -128,7 +128,7 @@ class MemberController extends Controller
      * @param int $memberId Member ID
      * @return Response
      */
-    public function delete($memberId)
+    public function delete(int $memberId)
     {
         $member = Member::findOrFail($memberId);
 
@@ -147,7 +147,7 @@ class MemberController extends Controller
      *
      * @return Response
      */
-    public function activate($memberId, $status = true)
+    public function activate(int $memberId, $status = true)
     {
         if ($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
             return response([
@@ -188,19 +188,8 @@ class MemberController extends Controller
      * @param int $memberId Member ID
      * @return Response
      */
-    public function getOne($memberId)
+    public function getOne(int $memberId)
     {
-
-        $validator = Validator::make(['memberId' => $memberId], [
-            'memberId' => 'required|int',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                'status' => false,
-                'errors' => g('NOT_FOUND')
-            ], 404);
-        }
 
         $member = Member::findOrFail($memberId);
 
@@ -217,19 +206,8 @@ class MemberController extends Controller
      * @param int $memberId Member Id
      * @return Response
      */
-    public function update(Request $request, $memberId)
+    public function update(Request $request, int $memberId)
     {
-        // Validate parameters
-        $validator = Validator::make(['memberId' => $memberId], [
-            'memberId' => 'required|int',
-        ]);
-
-        if ($validator->fails()) {
-            return response([
-                'status' => false,
-                'errors' => g('NOT_FOUND')
-            ], 404);
-        }
 
         // Validate form fields
         $validate = $this->validator($request, [
