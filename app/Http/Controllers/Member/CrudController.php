@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
 use Illuminate\Support\Facades\Storage;
 
-class CrudController extends AccessTokenController
+class CRUDController extends AccessTokenController
 {
     /**
      * Store member data
