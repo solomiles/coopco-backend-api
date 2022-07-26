@@ -29,7 +29,13 @@ class CRUDController extends Controller
         }
 
         $admin = Admin::findOrfail($adminId);
+        $oldPhoto = $admin->photo;
+
         $this->store($request,$admin);
+
+        if($oldPhoto != 'default-admin.png' && $request->input('photo')) {
+            Storage::delete('/public/admins/photo/'.$oldPhoto);
+        }
 
         return response([
             'status' => true,
@@ -49,8 +55,8 @@ class CRUDController extends Controller
         return Validator::make($request->all(), [
             'name' => 'required|string',
             'username' => 'required|string|min:5',
-            'password' => 'required|confirmed|min:4',
-            'photo' => 'required|base64image|base64max:5024'
+            'password' => 'confirmed|min:4',
+            'photo' => 'base64image|base64max:6000'
         ]);
     }
 
@@ -61,14 +67,19 @@ class CRUDController extends Controller
      * @return void
      */
     public function store(Request $request, $admin) {
-        
-        $photo = base64ToFile($request->input('photo'));
-        $photoName = $photo->hashName();
-        $photoPath = $photo->store('public/admin/photo');
+        if($request->input('photo')) {
+            // Store profile photo
+            $photo = base64ToFile($request->input('photo'));
+            $photoName = $photo->hashName();
+            $photo->store('public/admins/photo');
+        }
+        else {
+            $photoName = $member->photo;
+        }
 
         $admin->name = ucwords(strtolower($request->name));
         $admin->username = $request->username;
-        $admin->password = Hash::make($request->password);
+        if($request->password) $admin->password = Hash::make($request->password);
         $admin->photo = $photoName;
          
         $admin->save();

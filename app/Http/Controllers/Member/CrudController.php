@@ -36,6 +36,7 @@ class CrudController extends AccessTokenController
         $member->lastname = ucfirst($request->lastname);
         $member->othernames = ucfirst($request->othernames ?? '');
         $member->phone = $request->phone;
+        $member->gender = $request->gender;
         $member->photo = $photoName;
 
         if($request->password) $member->password = Hash::make($request->password);
