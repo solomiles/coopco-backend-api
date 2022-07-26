@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
+use Illuminate\Support\Facades\Storage;
 
 class CrudController extends AccessTokenController
 {
@@ -20,10 +21,15 @@ class CrudController extends AccessTokenController
      */
     public function store($request, $member)
     {
-        // Store profile photo
-        $photo = base64ToFile($request->input('photo'));
-        $photoName = $photo->hashName();
-        $photo->store('public/members/photo');
+        if($request->input('photo')) {
+            // Store profile photo
+            $photo = base64ToFile($request->input('photo'));
+            $photoName = $photo->hashName();
+            $photo->store('public/members/photo');
+        }
+        else {
+            $photoName = $member->photo;
+        }
 
         // Update member data
         $member->firstname = ucfirst($request->firstname);
@@ -31,7 +37,8 @@ class CrudController extends AccessTokenController
         $member->othernames = ucfirst($request->othernames ?? '');
         $member->phone = $request->phone;
         $member->photo = $photoName;
-        $member->password = Hash::make($request->password);
+
+        if($request->password) $member->password = Hash::make($request->password);
 
         $member->save();
     }
@@ -50,8 +57,8 @@ class CrudController extends AccessTokenController
             'lastname' => 'required|string|max:50',
             'othernames' => 'string|max:100',
             'phone' => 'required|max:15',
-            'photo' => 'required|base64image|base64mimes:png,jpg,jpeg|base64max:6000',
-            'password' => 'required|confirmed',
+            'photo' => 'base64image|base64mimes:png,jpg,jpeg|base64max:6000',
+            'password' => 'confirmed',
         ]);
     }
 
@@ -74,7 +81,13 @@ class CrudController extends AccessTokenController
         }
 
         $member = Member::findOrFail($memberId);
+        $oldPhoto = $member->photo;
+        
         $this->store($request, $member);
+
+        if($oldPhoto != 'default-member.png' && $request->input('photo')) {
+            Storage::delete('/public/members/photo/'.$oldPhoto);
+        }
 
         return response([
             'status' => true,
