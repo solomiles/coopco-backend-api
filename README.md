@@ -38,7 +38,7 @@ Open a new terminal and type `sail` to make sure the command has been added.
 - make sure WAMP/XAMPP/LAMP or any application using port **80** and post **5432** is not running
 
 - Make sure [docker desktop](https://www.docker.com/products/docker-desktop/) is running
-- open a new terminal and run `sail up`, wait for the images to download
+- open a new terminal and run `cp .env.example .env` then `sail up`, wait for the images to download
 - When the download is done, open localhost on your browser to confirm that the site is up and running 🚀
 
 
