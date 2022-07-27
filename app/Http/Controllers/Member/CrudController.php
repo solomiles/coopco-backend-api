@@ -19,8 +19,9 @@ class CRUDController extends AccessTokenController
      *
      * @return void
      */
-    public function store($request, $member)
+    public function store($request)
     {
+        $member = $request->user();
         if($request->input('photo')) {
             // Store profile photo
             $photo = base64ToFile($request->input('photo'));
@@ -66,10 +67,9 @@ class CRUDController extends AccessTokenController
     /**
      * Update member
      * @param Request $request
-     * @param int $memberId Member Id
      * @return Response
      */
-    public function update(Request $request, int $memberId)
+    public function update(Request $request)
     {
         // Validate form fields
         $validate = $this->validator($request);
@@ -81,10 +81,9 @@ class CRUDController extends AccessTokenController
             ], 400);
         }
 
-        $member = Member::findOrFail($memberId);
-        $oldPhoto = $member->photo;
+        $oldPhoto = $request->user()->photo;
         
-        $this->store($request, $member);
+        $this->store($request);
 
         if($oldPhoto != 'default-member.png' && $request->input('photo')) {
             Storage::delete('/public/members/photo/'.$oldPhoto);

@@ -143,13 +143,13 @@ class MemberController extends Controller
     /**
      * Activate/Deactivate member
      * @param int $memberId Member ID
-     * @param bool $status Set to true to activate, false to deactivate
+     * @param string $status activate or deactivate
      *
      * @return Response
      */
-    public function activate(int $memberId, $status = true)
+    public function updateStatus(int $memberId, $status = true)
     {
-        if ($status !== true && $status !== false && !in_array($status, ['true', 'false'])) {
+        if ($status !== 'activate' && $status !== 'deactivate') {
             return response([
                 'status' => true,
                 'message' => g('NOT_FOUND')
@@ -158,12 +158,12 @@ class MemberController extends Controller
 
         $member = Member::findOrFail($memberId);
 
-        $member->active = $status;
+        $member->active = $status == 'activate';
         $member->save();
 
         return response([
             'status' => true,
-            'message' => $status === true ? 'Member Activated' : 'Member Deactivated'
+            'message' => 'Member ' . ucfirst($status) . 'd'
         ], 200);
     }
 

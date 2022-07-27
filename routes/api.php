@@ -27,13 +27,13 @@ Route::prefix('admin')->group(function () {
         Route::prefix('members')->group(function () {
 
             // Create
-            Route::post('create', [App\Http\Controllers\Admin\MemberController::class, 'create']);
+            Route::post('/', [App\Http\Controllers\Admin\MemberController::class, 'create']);
 
             // Delete
-            Route::delete('delete/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'delete']);
+            Route::delete('/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'delete']);
 
             // Activate/Deactivate
-            Route::patch('activate/{memberId}/{status?}', [App\Http\Controllers\Admin\MemberController::class, 'activate']);
+            Route::patch('status/{memberId}/{status}', [App\Http\Controllers\Admin\MemberController::class, 'updateStatus']);
 
             // Search member
             Route::get('search', [App\Http\Controllers\Admin\MemberController::class, 'search']);
@@ -45,11 +45,11 @@ Route::prefix('admin')->group(function () {
             Route::get('/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'getOne']);
 
             // Update member
-            Route::put('update/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'update']);
+            Route::put('/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'update']);
         });
 
         // Update Admin
-        Route::put('update/{adminId}', [App\Http\Controllers\Admin\CRUDController::class, 'update']);
+        Route::put('', [App\Http\Controllers\Admin\CRUDController::class, 'update']);
 
     });
 });
@@ -79,7 +79,7 @@ Route::prefix('member')->group(function () {
     /* PROTECTED */
     Route::group(['middleware' => 'auth:mobile-api'], function () {
         // Update member
-        Route::put('update/{memberId}', [App\Http\Controllers\Member\CRUDController::class, 'update']);
+        Route::put('', [App\Http\Controllers\Member\CRUDController::class, 'update']);
     });
 });
 

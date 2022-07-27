@@ -15,10 +15,9 @@ class CRUDController extends Controller
      * Admin update
      * 
      * @param Request $request
-     * @param int $adminId Admin Id
      * @return Response
      */
-    public function update (Request $request, int $adminId) {
+    public function update (Request $request) {
         
         $validate = $this->validates($request);
         if ($validate->fails()) {
@@ -28,10 +27,9 @@ class CRUDController extends Controller
             ], 400);
         }
 
-        $admin = Admin::findOrfail($adminId);
-        $oldPhoto = $admin->photo;
+        $oldPhoto = $request->user()->photo;
 
-        $this->store($request,$admin);
+        $this->store($request);
 
         if($oldPhoto != 'default-admin.png' && $request->input('photo')) {
             Storage::delete('/public/admins/photo/'.$oldPhoto);
@@ -66,7 +64,9 @@ class CRUDController extends Controller
      * @param Admin $admin
      * @return void
      */
-    public function store(Request $request, $admin) {
+    public function store(Request $request) {
+        $admin = $request->user();
+
         if($request->input('photo')) {
             // Store profile photo
             $photo = base64ToFile($request->input('photo'));
