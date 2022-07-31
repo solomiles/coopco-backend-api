@@ -21,8 +21,8 @@ return new class extends Migration
             $table->enum('to',['member','admin']);
             $table->integer('from_id');
             $table->integer('to_id');
-            $table->boolean('seen');
-            $table->boolean('read');
+            $table->boolean('seen')->default(false);
+            $table->boolean('read')->default(false);
             $table->timestamps();
         });
     }

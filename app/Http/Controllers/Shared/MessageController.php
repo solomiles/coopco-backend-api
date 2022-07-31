@@ -32,7 +32,7 @@ class MessageController extends Controller
 
         return response([
             'status' => true,
-            'message' => 'Member Updated',
+            'message' => 'Message Sent Successfully',
         ], 200);
     }
 
@@ -66,14 +66,14 @@ class MessageController extends Controller
      */
     public function validator($request)
     {
-        $routePrefix = $request->route()->getPrefix();
+        $tableName = $request->user()->getTable();
 
         return Validator::make($request->all(), [
             'subject' => 'required|string',
             'content' => 'required|string',
             'from' => 'required|string',
             'to' => 'required|string',
-            'to_id' => 'required|exists:'.$routePrefix == 'member'?'members,id':'admins,id',
+            'to_id' => 'required|exists:'.$tableName.',id',
         ]);
     }
 }
