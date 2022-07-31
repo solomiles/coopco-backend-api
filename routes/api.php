@@ -51,6 +51,9 @@ Route::prefix('admin')->group(function () {
         // Update Admin
         Route::put('', [App\Http\Controllers\Admin\CRUDController::class, 'update']);
 
+        // Send message
+        Route::post('messages', [App\Http\Controllers\Shared\MessageController::class, 'send']);
+
     });
 });
 
@@ -80,6 +83,9 @@ Route::prefix('member')->group(function () {
     Route::group(['middleware' => 'auth:mobile-api'], function () {
         // Update member
         Route::put('', [App\Http\Controllers\Member\CRUDController::class, 'update']);
+
+        // Send message
+        Route::post('messages', [App\Http\Controllers\Shared\MessageController::class, 'send']);
     });
 });
 
