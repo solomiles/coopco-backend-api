@@ -76,4 +76,50 @@ class MessageController extends Controller
             'to_id' => 'required|exists:'.$tableName.',id',
         ]);
     }
+
+    /**
+     * Get messages sent by the logged-in user
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response - Response object
+     */
+    public function getSent(Request $request){
+        $modelName = substr($request->user()->getTable(), 0, -1);
+        $userId = $request->user()->id;
+        $relationship = ($modelName == 'member')?'adminto':'memberto';
+
+        $sentMessages = Message::with($relationship)->where([['from_id', '=', $userId],['from', '=', $modelName]])->orderBy('created_at', 'desc')->get();
+
+        $data = compact('sentMessages');
+
+        return response([
+            'status' => true,
+            'message' => 'Fetch Successful',
+            'data' => $data
+        ], 200);
+    }
+
+    /**
+     * Get messages received by the logged-in user
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response - Response object
+     */
+    public function getReceived(Request $request){
+        $modelName = substr($request->user()->getTable(), 0, -1);
+        $userId = $request->user()->id;
+        $relationship = ($modelName == 'member')?'adminfrom':'memberfrom';
+
+        $receivedMessages = Message::with($relationship)->where([['to_id', '=', $userId],['to', '=', $modelName]])->orderBy('created_at', 'desc')->get();
+
+        $data = compact('receivedMessages');
+
+        return response([
+            'status' => true,
+            'message' => 'Fetch Successful',
+            'data' => $data
+        ], 200);
+    }
 }

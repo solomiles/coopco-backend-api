@@ -86,6 +86,12 @@ Route::prefix('member')->group(function () {
 
         // Send message
         Route::post('messages', [App\Http\Controllers\Shared\MessageController::class, 'send']);
+
+        // Get received messages
+        Route::get('messages', [App\Http\Controllers\Shared\MessageController::class, 'getReceived']);
+
+        // Get sent messages
+        Route::get('messages/sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
     });
 });
 
