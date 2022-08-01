@@ -10,28 +10,28 @@ class Message extends Model
     use HasFactory;
 
     /**
-     * Return sender
+     * Return the member that sent a message
      */
     public function memberfrom(){
         return $this->belongsTo(Member::class, 'from_id');
     }
 
     /**
-     * Return recipient
+     * Return a member that received the message
      */
     public function memberto(){
         return $this->belongsTo(Member::class, 'to_id');
     }
 
     /**
-     * Return sender
+     * Return the admin that sent the message
      */
     public function adminfrom(){
         return $this->belongsTo(Admin::class, 'from_id');
     }
 
     /**
-     * Return recipient
+     * Return the admin that received the message
      */
     public function adminto(){
         return $this->belongsTo(Admin::class, 'to_id');
