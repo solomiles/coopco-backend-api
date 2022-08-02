@@ -14,6 +14,9 @@ return [
 
 	// Not Found HTTP Response Message
 	'NOT_FOUND' => 'The requested resource was not found',
+
+	// Forbidden HTTP Response Message
+	'FORBIDDEN'=>'You\'s not authorized to act on this resource',  
 ]
 
 ?>
