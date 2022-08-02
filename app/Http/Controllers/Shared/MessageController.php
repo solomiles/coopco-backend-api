@@ -122,4 +122,47 @@ class MessageController extends Controller
             'data' => $data
         ], 200);
     }
+
+    /**
+     * Delete message
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response
+     */
+    public function delete(Request $request, $messageId){
+        $user = $request->user();
+        
+        if(!$this->sender($user->id, $messageId)){
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+
+        Message::where([['id', '=', $messageId], ['from_id', '=', $user->id]])->forceDelete();
+
+        return response([
+            'status' => true,
+            'message' => 'Deleted Successfuly',
+        ], 200);
+    }
+
+    /**
+     * Check if logged-in user is a sender
+     * 
+     * @param integer $userId - Logged-in user id
+     * @param integer $messageId - Message id
+     * 
+     * @return boolean
+     */
+    public function sender($userId, $messageId){
+        $count = Message::where([['id', '=', $messageId],['from_id', '=', $userId]])->count();
+
+        if($count > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
