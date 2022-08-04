@@ -60,6 +60,14 @@ Route::prefix('admin')->group(function () {
         // Get sent messages
         Route::get('messages/sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
 
+        // Delete sent messages
+        Route::delete('messages/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'delete']);
+
+        // Mark message as seen
+        Route::patch('messages/seen/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsSeen']);
+
+        // Mark message as read
+        Route::patch('messages/read/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsRead']);
     });
 });
 
@@ -98,6 +106,15 @@ Route::prefix('member')->group(function () {
 
         // Get sent messages
         Route::get('messages/sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
+
+        // Delete sent messages
+        Route::delete('messages/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'delete']);
+
+        // Mark message as seen
+        Route::patch('messages/seen/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsSeen']);
+
+        // Mark message as read
+        Route::patch('messages/read/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsRead']);
     });
 });
 

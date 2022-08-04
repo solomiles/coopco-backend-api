@@ -9,6 +9,9 @@ class Message extends Model
 {
     use HasFactory;
 
+    // Attributes that are mass assignable
+    protected $fillable = ['read', 'seen'];
+
     /**
      * Return the member that sent a message
      */

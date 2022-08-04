@@ -122,4 +122,117 @@ class MessageController extends Controller
             'data' => $data
         ], 200);
     }
+
+    /**
+     * Delete message
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response
+     */
+    public function delete(Request $request, $messageId){
+        $user = $request->user();
+        
+        if(!$this->sender($user, $messageId)){
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+        
+        Message::where([['id', '=', $messageId], ['from_id', '=', $user->id]])->forceDelete();
+
+        return response([
+            'status' => true,
+            'message' => 'Deleted Successfuly',
+        ], 200);
+    }
+
+    /**
+     * Check if logged-in user is a sender
+     * 
+     * @param $user - Logged-in user object
+     * @param integer $messageId - Message id
+     * 
+     * @return boolean
+     */
+    public function sender($user, $messageId){
+        $modelName = substr($user->getTable(), 0, -1);
+        $count = Message::where([['id', '=', $messageId],['from_id', '=', $user->id], ['from', '=', $modelName]])->count();
+
+        if($count > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Check if logged-in user is a receiver
+     * 
+     * @param $user - Logged-in user object
+     * @param integer $messageId - Message id
+     * 
+     * @return boolean
+     */
+    public function receiver($user, $messageId){
+        $modelName = substr($user->getTable(), 0, -1);
+        $count = Message::where([['id', '=', $messageId],['to_id', '=', $user->id], ['to', '=', $modelName]])->count();
+
+        if($count > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Mark received message as seen
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response
+     */
+    public function markAsSeen(Request $request, $messageId){
+        $user = $request->user();
+        
+        if(!$this->receiver($user, $messageId)){
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+    
+        Message::where([['id', '=', $messageId], ['to_id', '=', $user->id]])->update(['seen'=>true]);
+
+        return response([
+            'status' => true,
+            'message' => 'Updated Successfuly',
+        ], 200);
+    }
+
+    /**
+     * Mark received message as read
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response
+     */
+    public function markAsRead(Request $request, $messageId){
+        $user = $request->user();
+        
+        if(!$this->receiver($user, $messageId)){
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+    
+        Message::where([['id', '=', $messageId], ['to_id', '=', $user->id]])->update(['read'=>true]);
+
+        return response([
+            'status' => true,
+            'message' => 'Updated Successfuly',
+        ], 200);
+    }
 }
