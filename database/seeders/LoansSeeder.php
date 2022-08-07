@@ -19,7 +19,8 @@ class LoansSeeder extends Seeder
             [
                 'name' => 'Cooperative Loan',
                 'short_name' => 'COOP-L',
-                'entity_data' => '{
+                'entity_data' => '
+                {
                     "formula": "(P*R*(T+1)/200)",
                     "interest_rate": {
                         "lt": 0.67,
@@ -31,7 +32,11 @@ class LoansSeeder extends Seeder
                     },
                     "grant_limit": 1000000,
                     "deduction": true,
-                    "accumulated_interest": true
+                    "accumulated_interest": true,
+                    "guarantors": {
+                        "number": 3,
+                        "have_accounts": true
+                    }
                 }'
             ]
         );
