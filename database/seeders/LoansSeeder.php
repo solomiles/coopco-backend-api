@@ -29,8 +29,9 @@ class LoansSeeder extends Seeder
                         "lt": 36,
                         "st": 15
                     },
-                    "grant_limit" => 1000000,
-
+                    "grant_limit": 1000000,
+                    "deduction": true,
+                    "accumulated_interest": true
                 }'
             ]
         );
