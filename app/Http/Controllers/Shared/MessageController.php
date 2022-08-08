@@ -91,12 +91,10 @@ class MessageController extends Controller
 
         $sentMessages = Message::with($relationship)->where([['from_id', '=', $userId],['from', '=', $modelName]])->orderBy('created_at', 'desc')->get();
 
-        $data = compact('sentMessages');
-
         return response([
             'status' => true,
             'message' => 'Fetch Successful',
-            'data' => $data
+            'data' => $sentMessages
         ], 200);
     }
 
@@ -114,12 +112,10 @@ class MessageController extends Controller
 
         $receivedMessages = Message::with($relationship)->where([['to_id', '=', $userId],['to', '=', $modelName]])->orderBy('created_at', 'desc')->get();
 
-        $data = compact('receivedMessages');
-
         return response([
             'status' => true,
             'message' => 'Fetch Successful',
-            'data' => $data
+            'data' => $receivedMessages
         ], 200);
     }
 
