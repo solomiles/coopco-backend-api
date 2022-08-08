@@ -139,6 +139,15 @@ class MessageController extends Controller
                 'errors' => g('FORBIDDEN'),
             ], 403);
         }
+
+        // Check if message exists
+        $count = Message::where([['id', '=', $messageId]])->count();
+        if($count < 1){
+            return response([
+                'status' => false,
+                'errors' => g('NOT_FOUND'),
+            ], 404);
+        }
         
         Message::where([['id', '=', $messageId], ['from_id', '=', $user->id]])->forceDelete();
 
