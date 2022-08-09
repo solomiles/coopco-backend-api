@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Shared;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Message;
 
@@ -27,7 +26,7 @@ class MessageController extends Controller
                 'errors' => $validate->errors()->messages(),
             ], 400);
         }
-        
+
         $this->store($request);
 
         return response([
@@ -73,7 +72,7 @@ class MessageController extends Controller
             'content' => 'required|string',
             'from' => 'required|string',
             'to' => 'required|string',
-            'to_id' => 'required|exists:'.$tableName.',id',
+            'to_id' => 'required|exists:' . $tableName . ',id',
         ]);
     }
 
@@ -84,19 +83,20 @@ class MessageController extends Controller
      * 
      * @return Response - Response object
      */
-    public function getSent(Request $request){
+    public function getSent(Request $request)
+    {
         $modelName = substr($request->user()->getTable(), 0, -1);
         $userId = $request->user()->id;
-        $relationship = ($modelName == 'member')?'toAdmin':'toMember';
+        $relationship = ($modelName == 'member') ? 'toAdmin' : 'toMember';
 
-        $sentMessages = Message::with($relationship)->where([['from_id', '=', $userId],['from', '=', $modelName]])->orderBy('created_at', 'desc')->get();
+        $sentMessages = Message::with($relationship)->where([['from_id', '=', $userId], ['from', '=', $modelName]])->orderBy('created_at', 'desc')->get();
 
         $data = compact('sentMessages');
 
         return response([
             'status' => true,
             'message' => 'Fetch Successful',
-            'data' => $data
+            'data' => $data['sentMessages']
         ], 200);
     }
 
@@ -107,19 +107,20 @@ class MessageController extends Controller
      * 
      * @return Response - Response object
      */
-    public function getReceived(Request $request){
+    public function getReceived(Request $request)
+    {
         $modelName = substr($request->user()->getTable(), 0, -1);
         $userId = $request->user()->id;
-        $relationship = ($modelName == 'member')?'fromAdmin':'fromMember';
+        $relationship = ($modelName == 'member') ? 'fromAdmin' : 'fromMember';
 
-        $receivedMessages = Message::with($relationship)->where([['to_id', '=', $userId],['to', '=', $modelName]])->orderBy('created_at', 'desc')->get();
+        $receivedMessages = Message::with($relationship)->where([['to_id', '=', $userId], ['to', '=', $modelName]])->orderBy('created_at', 'desc')->get();
 
         $data = compact('receivedMessages');
 
         return response([
             'status' => true,
             'message' => 'Fetch Successful',
-            'data' => $data
+            'data' => $data['receivedMessages']
         ], 200);
     }
 
@@ -130,49 +131,25 @@ class MessageController extends Controller
      * 
      * @return Response
      */
-    public function delete(Request $request, $messageId){
+    public function delete(Request $request, $messageId)
+    {
         $user = $request->user();
-        
-        if(!$this->sender($user, $messageId)){
-            return response([
-                'status' => false,
-                'errors' => g('FORBIDDEN'),
-            ], 403);
-        }
+        $modelName = substr($user->getTable(), 0, -1);
 
-        // Check if message exists
-        $count = Message::where([['id', '=', $messageId]])->count();
-        if($count < 1){
+        $message = Message::where([['id', '=', $messageId], ['from_id', '=', $user->id], ['from', '=', $modelName]]);
+        
+        if ($message->count() < 1) {
             return response([
                 'status' => false,
                 'errors' => g('NOT_FOUND'),
             ], 404);
         }
-        
-        Message::where([['id', '=', $messageId], ['from_id', '=', $user->id]])->forceDelete();
+
+        $message->forceDelete();
 
         return response([
             'status' => true,
             'message' => 'Deleted Successfuly',
         ], 200);
-    }
-
-    /**
-     * Check if logged-in user is a sender
-     * 
-     * @param $user - Logged-in user object
-     * @param integer $messageId - Message id
-     * 
-     * @return boolean
-     */
-    public function sender($user, $messageId){
-        $modelName = substr($user->getTable(), 0, -1);
-        $count = Message::where([['id', '=', $messageId],['from_id', '=', $user->id], ['from', '=', $modelName]])->count();
-
-        if($count > 0){
-            return true;
-        }else{
-            return false;
-        }
     }
 }
