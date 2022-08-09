@@ -122,4 +122,57 @@ class MessageController extends Controller
             'data' => $data
         ], 200);
     }
+
+    /**
+     * Delete message
+     * 
+     * @param Request $request - Request object
+     * 
+     * @return Response
+     */
+    public function delete(Request $request, $messageId){
+        $user = $request->user();
+        
+        if(!$this->sender($user, $messageId)){
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+
+        // Check if message exists
+        $count = Message::where([['id', '=', $messageId]])->count();
+        if($count < 1){
+            return response([
+                'status' => false,
+                'errors' => g('NOT_FOUND'),
+            ], 404);
+        }
+        
+        Message::where([['id', '=', $messageId], ['from_id', '=', $user->id]])->forceDelete();
+
+        return response([
+            'status' => true,
+            'message' => 'Deleted Successfuly',
+        ], 200);
+    }
+
+    /**
+     * Check if logged-in user is a sender
+     * 
+     * @param $user - Logged-in user object
+     * @param integer $messageId - Message id
+     * 
+     * @return boolean
+     */
+    public function sender($user, $messageId){
+        $modelName = substr($user->getTable(), 0, -1);
+        $count = Message::where([['id', '=', $messageId],['from_id', '=', $user->id], ['from', '=', $modelName]])->count();
+
+        if($count > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
