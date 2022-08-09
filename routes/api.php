@@ -60,6 +60,8 @@ Route::prefix('admin')->group(function () {
         // Get sent messages
         Route::get('messages/sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
 
+        // Delete sent messages
+        Route::delete('messages/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'delete']);
     });
 });
 
@@ -98,6 +100,9 @@ Route::prefix('member')->group(function () {
 
         // Get sent messages
         Route::get('messages/sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
+
+        // Delete sent messages
+        Route::delete('messages/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'delete']);
     });
 });
 
