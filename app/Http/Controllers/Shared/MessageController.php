@@ -91,12 +91,10 @@ class MessageController extends Controller
 
         $sentMessages = Message::with($relationship)->where([['from_id', '=', $userId], ['from', '=', $modelName]])->orderBy('created_at', 'desc')->get();
 
-        $data = compact('sentMessages');
-
         return response([
             'status' => true,
             'message' => 'Fetch Successful',
-            'data' => $data['sentMessages']
+            'data' => $sentMessages
         ], 200);
     }
 
@@ -115,12 +113,10 @@ class MessageController extends Controller
 
         $receivedMessages = Message::with($relationship)->where([['to_id', '=', $userId], ['to', '=', $modelName]])->orderBy('created_at', 'desc')->get();
 
-        $data = compact('receivedMessages');
-
         return response([
             'status' => true,
             'message' => 'Fetch Successful',
-            'data' => $data['receivedMessages']
+            'data' => $receivedMessages
         ], 200);
     }
 
@@ -133,11 +129,8 @@ class MessageController extends Controller
      */
     public function delete(Request $request, $messageId)
     {
-        $user = $request->user();
-        $modelName = substr($user->getTable(), 0, -1);
+        $message = $this->getSingleSentMessage($messageId, $request->user());
 
-        $message = Message::where([['id', '=', $messageId], ['from_id', '=', $user->id], ['from', '=', $modelName]]);
-        
         if ($message->count() < 1) {
             return response([
                 'status' => false,
@@ -150,6 +143,84 @@ class MessageController extends Controller
         return response([
             'status' => true,
             'message' => 'Deleted Successfuly',
+        ], 200);
+    }
+
+    /**
+     * Get single received message
+     * 
+     * @param int $messageId
+     * @param object $user
+     */
+    public function getSingleReceivedMessage($messageId, $user) {
+        $modelName = substr($user->getTable(), 0, -1);
+
+        return Message::where([['id', '=', $messageId], ['to_id', '=', $user->id], ['to', '=', $modelName]]);
+    }
+
+    /**
+     * Get single sent message
+     * 
+     * @param int $messageId
+     * @param object $user
+     */
+    public function getSingleSentMessage($messageId, $user) {
+        $modelName = substr($user->getTable(), 0, -1);
+
+        return Message::where([['id', '=', $messageId], ['from_id', '=', $user->id], ['from', '=', $modelName]]);
+    }
+
+    /**
+     * Mark received message as seen
+     * 
+     * @param Request $request - Request object
+     * @param int $messageId
+     * 
+     * @return Response
+     */
+    public function markAsSeen(Request $request, $messageId)
+    {
+        $message = $this->getSingleReceivedMessage($messageId, $request->user());
+
+        if ($message->count() < 1) {
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+
+        $message->update(['seen' => true]);
+
+        return response([
+            'status' => true,
+            'message' => 'Updated Successfuly',
+        ], 200);
+    }
+
+    /**
+     * Mark received message as read
+     * 
+     * @param Request $request - Request object
+     * @param int $messageId
+     * 
+     * @return Response
+     */
+    public function markAsRead(Request $request, $messageId)
+    {
+        $message = $this->getSingleReceivedMessage($messageId, $request->user());
+        
+        if ($message->count() < 1) {
+            return response([
+                'status' => false,
+                'errors' => g('FORBIDDEN'),
+            ], 403);
+        }
+
+        $message->update(['read' => true]);
+
+        return response([
+            'status' => true,
+            'message' => 'Updated Successfuly',
         ], 200);
     }
 }
