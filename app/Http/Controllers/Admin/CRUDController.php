@@ -18,7 +18,7 @@ class CRUDController extends Controller
      */
     public function update (Request $request) {
         
-        $validate = $this->validates($request);
+        $validate = $this->validator($request);
         if ($validate->fails()) {
             return response([
                 'status' => false,
@@ -48,8 +48,7 @@ class CRUDController extends Controller
      * 
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validates($request) {
-
+    public function validator($request) {
         return Validator::make($request->all(), [
             'name' => 'required|string',
             'username' => 'required|string|min:5',
