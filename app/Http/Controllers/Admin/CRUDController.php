@@ -7,7 +7,6 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 class CRUDController extends Controller
 {
@@ -29,7 +28,7 @@ class CRUDController extends Controller
 
         $oldPhoto = $request->user()->photo;
 
-        $this->store($request);
+        $admin = $this->store($request);
 
         if($oldPhoto != 'default-admin.png' && $request->input('photo')) {
             Storage::delete('/public/admins/photo/'.$oldPhoto);
@@ -37,7 +36,8 @@ class CRUDController extends Controller
 
         return response([
             'status' => true,
-            'message' => 'Admin Updated'
+            'message' => 'Admin Updated',
+            'data' => $admin
         ], 200);
     }
 
@@ -53,7 +53,7 @@ class CRUDController extends Controller
         return Validator::make($request->all(), [
             'name' => 'required|string',
             'username' => 'required|string|min:5',
-            'password' => 'confirmed|min:4',
+            'password' => 'confirmed',
             'photo' => 'base64image|base64max:6000'
         ]);
     }
@@ -74,7 +74,7 @@ class CRUDController extends Controller
             $photo->store('public/admins/photo');
         }
         else {
-            $photoName = $member->photo;
+            $photoName = $admin->photo;
         }
 
         $admin->name = ucwords(strtolower($request->name));
@@ -83,5 +83,7 @@ class CRUDController extends Controller
         $admin->photo = $photoName;
          
         $admin->save();
+
+        return $admin;
     }
 }

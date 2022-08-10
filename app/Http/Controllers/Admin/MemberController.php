@@ -229,7 +229,8 @@ class MemberController extends Controller
 
         return response([
             'status' => true,
-            'message' => 'Member Updated'
+            'message' => 'Member Updated',
+            'data' => $member
         ], 200);
     }
 
