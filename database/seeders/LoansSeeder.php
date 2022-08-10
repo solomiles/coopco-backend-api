@@ -33,6 +33,7 @@ class LoansSeeder extends Seeder
                     "grant_limit": 1000000,
                     "deduction": true,
                     "accumulated_interest": true,
+                    "fixed_interest": false,
                     "guarantors": {
                         "number": 3,
                         "have_accounts": true

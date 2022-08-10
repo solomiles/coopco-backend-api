@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Loan;
-
 trait LoanTrait
 {
     /**
@@ -32,27 +30,41 @@ trait LoanTrait
 
     /**
      * Compose guarantor validation rules
-     * @param int $loanId - Loan id
+     * @param Loan $loan - Loan id
      * 
      * @return array
      */
-    public function guarantorRules($loanId)
+    public function guarantorRules($loan)
     {
-        $loan = Loan::findOrFail($loanId);
         $guarantors = json_decode($loan->guarantors);
 
         $validation_rules = [];
 
+        $conditionalRule = $guarantors->have_accounts ? 'exists:members' : 'string';
         for ($i = 1; $i <= 3; $i++) {
-            $guarantors->have_accounts
-                ? array_push($validation_rules, [
-                    'guarantor' . $i => 'required|exists:members'
-                ])
-                : array_push($validation_rules, [
-                    'guarantor' . $i => 'required|string'
-                ]);
+            array_push($validation_rules, [
+                'guarantor' . $i => 'required|' . $conditionalRule
+            ]);
         }
 
         return $validation_rules;
+    }
+
+    /**
+     * Loan grant limit validation rule
+     * @param Loan $loan
+     * 
+     * @return array
+     */
+    public function grantLimitRule($loan) {
+        $grantLimit = json_decode($loan->grant_limit);
+
+        $validation_rule = ['amount' => 'required|numeric|min:1'];
+
+        if($grantLimit > 0) {
+            $validation_rule['amount'] .= '|max:'.$grantLimit;
+        }
+
+        return $validation_rule;
     }
 }
