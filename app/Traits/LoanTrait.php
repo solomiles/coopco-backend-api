@@ -7,9 +7,10 @@ trait LoanTrait
     /**
      * Calculate loan interest
      * @param Loan $loan - Loan object
-     * @param array $data - Loan data array. Format: [amount => float, rate => 'st, mt, lt', duration => 'st, mt, lt']
+     * @param array $data - Loan data array. Format: [amount => float, rate => ['st, mt, lt'], duration => ['st, mt, lt']]
      */
-    public function calculateInterest($loan, $data) {
+    public function calculateInterest($loan, $data)
+    {
         $formula = json_decode($loan->entity_data)->formula;
 
         $principal = $data['amount'];
@@ -21,7 +22,7 @@ trait LoanTrait
         $formula = str_replace('T', $time, $formula);
 
         $i = eval('return ' . $formula . ';');
-        
+
         return $i;
     }
 }
