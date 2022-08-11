@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('loan_applications', function (Blueprint $table) {
             $table->id();
             $table->string('amount');
-            $table->text('purpose');
+            $table->text('purpose')->nullable();
             $table->foreignId('loan_id')->constrained('loans')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();

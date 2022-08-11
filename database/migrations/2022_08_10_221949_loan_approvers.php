@@ -22,7 +22,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
             $table->text('action_reason')->nullable();
             $table->integer('from_approver')->nullable();
-            $table->timestamp('date_of_action');
+            $table->timestamp('date_of_action')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
