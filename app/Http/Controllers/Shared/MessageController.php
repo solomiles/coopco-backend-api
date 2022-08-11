@@ -65,7 +65,7 @@ class MessageController extends Controller
      */
     public function validator($request)
     {
-        $tableName = $request->user()->getTable();
+        $tableName = $request->user()->getTable() == 'admins' ? 'members' : 'admins';
 
         return Validator::make($request->all(), [
             'subject' => 'required|string',
