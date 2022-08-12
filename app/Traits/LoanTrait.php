@@ -2,8 +2,81 @@
 
 namespace App\Traits;
 
+use App\Models\Member;
+
 trait LoanTrait
 {
+
+    /**
+     * Get loan entity data attribute value
+     * 
+     * @param Loan $loan
+     * @param string $attributeName
+     * 
+     * @return mixed
+     */
+    public function getAttr($loan, $attributeName)
+    {
+        $entityData = json_decode($loan->entity_data);
+
+        return $entityData->{$attributeName};
+    }
+
+    /**
+     * Check if a loan has guarantors
+     * 
+     * @param Loan $loan
+     * @return boolean
+     */
+    public function hasGuarantors($loan)
+    {
+        return $this->getAttr($loan, 'guarantors')->number > 0;
+    }
+
+    /**
+     * Get and format loan approvers from request object
+     * 
+     * @param Loan $loan
+     * @param Request $request
+     * 
+     * @return array
+     */
+    public function getApprovers($loan, $request)
+    {
+        $approversData = [];
+
+        $approvers = $this->getAttr($loan, 'approvers');
+
+        foreach ($approvers as $approver) {
+            if ($approver == 'guarantor' && $this->hasGuarantors($loan)) {
+                $guarantorsNum = $this->getAttr($loan, 'guarantors')->number;
+                $haveAccounts = $this->getAttr($loan, 'guarantors')->have_accounts;
+
+                for ($i = 0; $i < $guarantorsNum; $i++) {
+                    if ($haveAccounts) {
+                        $member = Member::findOrFail($request->guarantors[$i]);
+                        $name = implode(' ', [$member->firstname, $member->lastname, $member->othernames]);
+
+                        array_push($approversData, [
+                            'approver_name' => $name,
+                            'approver_type' => 'guarantor',
+                            'approver_id' => $member->id
+                        ]);
+                    } else {
+                        array_push($approversData, [
+                            'approver_name' => $request->guarantors[$i],
+                            'approver_type' => 'guarantor'
+                        ]);
+                    }
+                }
+            } else {
+                array_push($approversData, ['approver_type' => $approver]);
+            }
+        }
+
+        return $approversData;
+    }
+
     /**
      * Calculate loan interest
      * @param Loan $loan - Loan object
@@ -13,11 +86,11 @@ trait LoanTrait
      */
     public function calculateInterest($loan, $data)
     {
-        $formula = json_decode($loan->entity_data)->formula;
+        $formula = $this->getAttr($loan, 'formula');
 
         $principal = $data['amount'];
-        $rate = json_decode($loan->entity_data)->interest_rate->{$data['rate']};
-        $time = json_decode($loan->entity_data)->duration->{$data['duration']};
+        $rate = $this->getAttr($loan, 'interest_rate')->{$data['rate']};
+        $time = $this->getAttr($loan, 'duration')->{$data['duration']};
 
         $formula = str_replace('P', $principal, $formula);
         $formula = str_replace('R', $rate, $formula);
@@ -29,25 +102,22 @@ trait LoanTrait
     }
 
     /**
-     * Compose guarantor validation rules
+     * Compose guarantor validation rule
      * @param Loan $loan - Loan id
      * 
      * @return array
      */
-    public function guarantorRules($loan)
+    public function guarantorRule($loan)
     {
-        $guarantors = json_decode($loan->guarantors);
+        $guarantors = $this->getAttr($loan, 'guarantors')->guarantors;
 
-        $validation_rules = [];
+        $validationRule = [];
 
         $conditionalRule = $guarantors->have_accounts ? 'exists:members' : 'string';
-        for ($i = 1; $i <= 3; $i++) {
-            array_push($validation_rules, [
-                'guarantor' . $i => 'required|' . $conditionalRule
-            ]);
-        }
 
-        return $validation_rules;
+        $validationRule['guarantor.*'] = 'required|' . $conditionalRule;
+
+        return $validationRule;
     }
 
     /**
@@ -56,15 +126,16 @@ trait LoanTrait
      * 
      * @return array
      */
-    public function grantLimitRule($loan) {
-        $grantLimit = json_decode($loan->grant_limit);
+    public function grantLimitRule($loan)
+    {
+        $grantLimit = $this->getAttr($loan, 'grant_limit');
 
-        $validation_rule = ['amount' => 'required|numeric|min:1'];
+        $validationRule = ['amount' => 'required|numeric|min:1'];
 
-        if($grantLimit > 0) {
-            $validation_rule['amount'] .= '|max:'.$grantLimit;
+        if ($grantLimit > 0) {
+            $validationRule['amount'] .= '|max:' . $grantLimit;
         }
 
-        return $validation_rule;
+        return $validationRule;
     }
 }

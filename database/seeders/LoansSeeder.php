@@ -37,7 +37,7 @@ class LoansSeeder extends Seeder
                         "number": 3,
                         "have_accounts": true
                     },
-                    "approvers": ["guarantors", "president", "admin"]
+                    "approvers": ["guarantor", "president", "admin"]
                 }'
             ]
         );
