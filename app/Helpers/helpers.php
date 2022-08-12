@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * Swicth psql DB schema
+ * Switch psql DB schema
  *
  * @param Illuminate\Http\Request $request - HTTP Request object
  * @param string $schema - (Optional) Schema for application to switch to
@@ -22,7 +22,7 @@ function switchSchema($request, $schema = null)
 }
 
 /**
- * Swicth email credentials
+ * Switch email credentials
  *
  * @param array $emailConfig
  *
