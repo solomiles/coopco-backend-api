@@ -73,7 +73,7 @@ class MemberController extends Controller
         return Validator::make($request->all(), [
             'firstname' => $customRules['firstname'] ?? 'required|string|max:50',
             'lastname' => $customRules['lastname'] ?? 'required|string|max:50',
-            'othernames' => $customRules['othernames'] ?? 'string|max:100',
+            'othernames' => $customRules['othernames'] ?? 'max:100',
             'email' => $customRules['email'] ?? 'required|email:filter,rfc,dns|unique:members',
             'phone' => $customRules['phone'] ?? 'required|max:15',
             'gender' => [

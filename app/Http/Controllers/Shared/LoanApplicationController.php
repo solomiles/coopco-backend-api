@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Shared;
 
+use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use App\Models\LoanApplication;
 use App\Models\LoanApprover;

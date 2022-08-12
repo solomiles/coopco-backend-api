@@ -109,13 +109,13 @@ trait LoanTrait
      */
     public function guarantorRule($loan)
     {
-        $guarantors = $this->getAttr($loan, 'guarantors')->guarantors;
+        $guarantors = $this->getAttr($loan, 'guarantors');
 
-        $validationRule = [];
+        $validationRule = ['guarantors' => 'required|array|size:'.$guarantors->number];
 
-        $conditionalRule = $guarantors->have_accounts ? 'exists:members' : 'string';
+        $conditionalRule = $guarantors->have_accounts ? 'int|exists:members,id' : 'string';
 
-        $validationRule['guarantor.*'] = 'required|' . $conditionalRule;
+        $validationRule['guarantors.*'] = $conditionalRule;
 
         return $validationRule;
     }

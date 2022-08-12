@@ -57,7 +57,7 @@ class CRUDController extends AccessTokenController
         return Validator::make($request->all(), [
             'firstname' => 'required|string|max:50',
             'lastname' => 'required|string|max:50',
-            'othernames' => 'string|max:100',
+            'othernames' => 'max:100',
             'phone' => 'required|max:15',
             'photo' => 'base64image|base64mimes:png,jpg,jpeg|base64max:6000',
             'password' => 'confirmed',
