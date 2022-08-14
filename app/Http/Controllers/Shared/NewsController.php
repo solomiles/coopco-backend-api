@@ -27,14 +27,16 @@ class NewsController extends Controller
             ], 400);
         }
 
-        $news = new News();
-        $news->title = $request->title;
-        $news->content = $request->content;
-        $news->save();
+        $this->store($request);
+
+        return response([
+            'status' => true,
+            'message' => 'News Created Successfully',
+        ], 200);
     }
 
     /**
-     * Member data validator
+     * News data validator
      * @param Request $request
      *
      * @return \Illuminate\Contracts\Validation\Validator
@@ -45,5 +47,21 @@ class NewsController extends Controller
            'title'=>'required',
            'content'=>'required'
         ]);
+    }
+
+    /**
+     * Store news data
+     * @param Request $request
+     *
+     * @return void
+     */
+    public function store($request)
+    {
+        // Store news data
+        $news = new News();
+        $news->title = $request->title;
+        $news->content = $request->content;
+
+        $news->save();
     }
 }

@@ -70,6 +70,10 @@ Route::prefix('admin')->group(function () {
             // Mark message as read
             Route::patch('read/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsRead']);
         });
+
+        Route::prefix('news')->group(function () {
+            Route::post('', [App\Http\Controllers\Shared\NewsController::class, 'create']);
+        });
     });
 });
 
