@@ -84,6 +84,7 @@ Route::prefix('admin')->group(function () {
 
         Route::prefix('news')->group(function () {
             Route::post('', [App\Http\Controllers\Shared\NewsController::class, 'create']);
+            Route::get('', [App\Http\Controllers\Shared\NewsController::class, 'get']);
         });
     });
 });
@@ -141,8 +142,11 @@ Route::prefix('member')->group(function () {
         });
 
         Route::prefix('news')->group(function () {
+<<<<<<< HEAD
             
             // Get news
+=======
+>>>>>>> 1442812 (Add get method for admin and member to enable news fetching)
             Route::get('', [App\Http\Controllers\Shared\NewsController::class, 'get']);
         });
     });
