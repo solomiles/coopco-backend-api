@@ -88,11 +88,11 @@ class NewsController extends Controller
      * Update news
      * 
      * @param Request $request
-     * @param integer $newsId - The unique news ID
+     * @param int $newsId - The unique news ID
      * 
      * @return Response
      */
-    public function update(Request $request, $newsId)
+    public function update(Request $request, int $newsId)
     {
         // Validate form fields
         $validate = $this->validator($request);
@@ -110,6 +110,23 @@ class NewsController extends Controller
         return response([
             'status' => true,
             'message' => 'Post Updated Successfully',
+        ], 200);
+    }
+
+    /**
+     * Delete news
+     * 
+     * @param int $newsId - Unique news ID
+     * 
+     * @return Response
+     */
+    public function delete(int $newsId)
+    {
+        News::findOrFail($newsId)->forceDelete();
+
+        return response([
+            'status' => true,
+            'message' => 'Post Deleted Successfuly'
         ], 200);
     }
 }
