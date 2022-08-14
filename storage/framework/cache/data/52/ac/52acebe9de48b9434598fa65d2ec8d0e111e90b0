@@ -2,6 +2,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 1660766625i:1660766624;
 =======
 1660479784i:1660479784;
@@ -15,3 +16,6 @@
 =======
 1660632684i:1660632684;
 >>>>>>> d434e84 (Add news update method and endpoint for admin)
+=======
+1660479784i:1660479784;
+>>>>>>> 740d99a (Add store method to handle creation of new row in news table)
