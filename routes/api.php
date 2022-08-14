@@ -77,6 +77,7 @@ Route::prefix('admin')->group(function () {
 
         Route::prefix('news')->group(function () {
             Route::post('', [App\Http\Controllers\Shared\NewsController::class, 'create']);
+            Route::get('', [App\Http\Controllers\Shared\NewsController::class, 'get']);
         });
     });
 });
@@ -131,6 +132,10 @@ Route::prefix('member')->group(function () {
 
             // Apply for a loan
             Route::post('apply/{loanId}', [App\Http\Controllers\Shared\LoanApplicationController::class, 'apply']);
+        });
+
+        Route::prefix('news')->group(function () {
+            Route::get('', [App\Http\Controllers\Shared\NewsController::class, 'get']);
         });
     });
 });
