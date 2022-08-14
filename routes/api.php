@@ -74,6 +74,10 @@ Route::prefix('admin')->group(function () {
         Route::prefix('news')->group(function () {
             Route::post('', [App\Http\Controllers\Shared\NewsController::class, 'create']);
         });
+
+        Route::prefix('news')->group(function () {
+            Route::post('', [App\Http\Controllers\Shared\NewsController::class, 'create']);
+        });
     });
 });
 
