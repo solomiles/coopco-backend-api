@@ -53,22 +53,22 @@ Route::prefix('admin')->group(function () {
 
         Route::prefix('messages')->group(function () {
             // Send message
-            Route::post('messages', [App\Http\Controllers\Shared\MessageController::class, 'send']);
+            Route::post('', [App\Http\Controllers\Shared\MessageController::class, 'send']);
 
             // Get received messages
-            Route::get('messages', [App\Http\Controllers\Shared\MessageController::class, 'getReceived']);
+            Route::get('', [App\Http\Controllers\Shared\MessageController::class, 'getReceived']);
 
             // Get sent messages
-            Route::get('messages/sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
+            Route::get('sent', [App\Http\Controllers\Shared\MessageController::class, 'getSent']);
 
             // Delete sent messages
-            Route::delete('messages/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'delete']);
+            Route::delete('/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'delete']);
 
             // Mark message as seen
-            Route::patch('messages/seen/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsSeen']);
+            Route::patch('seen/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsSeen']);
 
             // Mark message as read
-            Route::patch('messages/read/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsRead']);
+            Route::patch('read/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsRead']);
         });
     });
 });
