@@ -80,6 +80,9 @@ Route::prefix('admin')->group(function () {
 
             // Update news post
             Route::put('/{newsId}', [App\Http\Controllers\Shared\NewsController::class, 'update']);
+
+            // Delete news post
+            Route::delete('/{newsId}', [App\Http\Controllers\Shared\NewsController::class, 'delete']);
         });
     });
 });
