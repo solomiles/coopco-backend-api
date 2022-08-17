@@ -134,7 +134,7 @@ class MessageController extends Controller
         if ($message->count() < 1) {
             return response([
                 'status' => false,
-                'errors' => g('NOT_FOUND'),
+                'message' => g('NOT_FOUND'),
             ], 404);
         }
 
@@ -185,7 +185,7 @@ class MessageController extends Controller
         if ($message->count() < 1) {
             return response([
                 'status' => false,
-                'errors' => g('FORBIDDEN'),
+                'message' => g('FORBIDDEN'),
             ], 403);
         }
 
@@ -212,7 +212,7 @@ class MessageController extends Controller
         if ($message->count() < 1) {
             return response([
                 'status' => false,
-                'errors' => g('FORBIDDEN'),
+                'message' => g('FORBIDDEN'),
             ], 403);
         }
 
