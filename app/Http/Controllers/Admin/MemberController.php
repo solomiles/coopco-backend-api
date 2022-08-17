@@ -41,9 +41,11 @@ class MemberController extends Controller
 
         $send = $this->sendWelcomeEmail($member);
         if (!$send) {
+            $member->forceDelete();
+            
             return response([
                 'status' => false,
-                'message' => g('SERVER_ERROR')
+                'message' => 'Could not send welcome email'
             ], 500);
         }
 
