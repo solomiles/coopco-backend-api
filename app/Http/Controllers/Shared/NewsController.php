@@ -31,7 +31,7 @@ class NewsController extends Controller
 
         return response([
             'status' => true,
-            'message' => 'News Created Successfully',
+            'message' => 'Post Created Successfully',
         ], 200);
     }
 
