@@ -27,7 +27,8 @@ class NewsController extends Controller
             ], 400);
         }
 
-        $this->store($request);
+        $news = new News();
+        $this->store($request, $news);
 
         return response([
             'status' => true,
@@ -51,17 +52,33 @@ class NewsController extends Controller
 
     /**
      * Store news data
+     * 
      * @param Request $request
+     * @param News $news
      *
      * @return void
      */
-    public function store($request)
+    public function store($request, $news)
     {
         // Store news data
-        $news = new News();
         $news->title = $request->title;
         $news->content = $request->content;
 
         $news->save();
+    }
+
+    /**
+     * Fetch news
+     * 
+     * @return Response
+     */
+    public function get(){
+        $news = News::paginate(20);
+
+        return response([
+            'status' => true,
+            'message' => 'Successful',
+            'data' => $news
+        ], 200);
     }
 }
