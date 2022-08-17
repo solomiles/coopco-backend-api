@@ -16,7 +16,8 @@ class NewsController extends Controller
      * 
      * @return void
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         // Validate form fields
         $validate = $this->validator($request);
 
@@ -45,8 +46,8 @@ class NewsController extends Controller
     public function validator($request)
     {
         return Validator::make($request->all(), [
-           'title'=>'required',
-           'content'=>'required'
+            'title' => 'required',
+            'content' => 'required'
         ]);
     }
 
@@ -72,13 +73,43 @@ class NewsController extends Controller
      * 
      * @return Response
      */
-    public function get(){
+    public function get()
+    {
         $news = News::paginate(20);
 
         return response([
             'status' => true,
             'message' => 'Successful',
             'data' => $news
+        ], 200);
+    }
+
+    /**
+     * Update news
+     * 
+     * @param Request $request
+     * @param integer $newsId - The unique news ID
+     * 
+     * @return Response
+     */
+    public function update(Request $request, $newsId)
+    {
+        // Validate form fields
+        $validate = $this->validator($request);
+
+        if ($validate->fails()) {
+            return response([
+                'status' => false,
+                'errors' => $validate->errors()->messages(),
+            ], 400);
+        }
+
+        $news = News::findOrFail($newsId);
+        $this->store($request, $news);
+
+        return response([
+            'status' => true,
+            'message' => 'Post Updated Successfully',
         ], 200);
     }
 }

@@ -77,6 +77,9 @@ Route::prefix('admin')->group(function () {
 
             // Get news
             Route::get('', [App\Http\Controllers\Shared\NewsController::class, 'get']);
+
+            // Update news post
+            Route::put('/{newsId}', [App\Http\Controllers\Shared\NewsController::class, 'update']);
         });
     });
 });
