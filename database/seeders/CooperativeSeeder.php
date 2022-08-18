@@ -20,7 +20,7 @@ class CooperativeSeeder extends Seeder
             'name' => 'Test Cooperative',
             'country_id' => '1',
             'plan_id' => '1',
-            'type' => 'university_cooperative'
+            'type' => 'testcoop.com'
         ]);
     }
 }
