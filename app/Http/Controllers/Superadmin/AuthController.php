@@ -50,7 +50,7 @@ class AuthController extends Controller
             return response()->json($invalidCredentialsResponse, 401);
         }
 
-        $token = $superadmin->createToken('Coopco Admin Token');
+        $token = $superadmin->createToken('Coopco Superadmin Token', ['superadmins']);
        
         $data = [
             'superadmin' => $superadmin,

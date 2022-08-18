@@ -49,7 +49,7 @@ class AuthController extends Controller
             return response()->json($invalidCredentialsResponse, 401);
         }
 
-        $token = $admin->createToken('Cooperative Admin Token');
+        $token = $admin->createToken('Cooperative Admin Token', ['admins']);
        
         $data = [
             'admin' => $admin,

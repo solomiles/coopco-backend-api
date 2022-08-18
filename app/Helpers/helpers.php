@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\File;
@@ -8,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\File;
 /**
  * Switch psql DB schema
  *
- * @param Illuminate\Http\Request $request - HTTP Request object
+ * @param $request - HTTP Request object
  * @param string $schema - (Optional) Schema for application to switch to
  *
  * @return void
@@ -80,6 +82,25 @@ function createSchema($schemaName)
 }
 
 /**
+ * Migrate new schema from public migration files
+ * @param string $schemaName
+ * 
+ * @return void
+ */
+function migrateNewSchema($schemaName)
+{
+    switchSchema([], $schemaName);
+    Artisan::call('migrate');
+
+    Artisan::call('db:seed', ['--class' => 'Database\Seeders\\CountriesSeeder']);
+    Artisan::call('db:seed', ['--class' => 'Database\Seeders\\PlansSeeder']);
+    Artisan::call('db:seed', ['--class' => 'Database\Seeders\\AdminSeeder']);
+
+    DB::unprepared('INSERT INTO oauth_personal_access_clients SELECT * FROM public.oauth_personal_access_clients');
+    DB::unprepared('INSERT INTO oauth_clients SELECT * FROM public.oauth_clients');
+}
+
+/**
  * Convert base64 encoded file to actual file
  * @param string $base64File
  *
@@ -102,7 +123,7 @@ function base64ToFile($base64File)
         $tmpFile->getFilename(),
         $tmpFile->getMimeType(),
         0,
-        true// Mark it as test, since the file isn't from real HTTP POST.
+        true // Mark it as test, since the file isn't from real HTTP POST.
     );
 
     return $file;

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Laravel\Passport\Exceptions\MissingScopeException;
 use LogicException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -80,7 +81,7 @@ class Handler extends ExceptionHandler
         }
 
         // Handle 401 HttpResponseException exceptions
-        if ($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401) {
+        if ($e instanceof HttpResponseException && $e->getResponse()->getStatusCode() == 401 || $e instanceof MissingScopeException) {
             return response([
                 'success' => false,
                 'message' => g('UNAUTHORIZED'),

@@ -21,7 +21,7 @@ Route::prefix('admin')->group(function () {
     Route::post('login', [App\Http\Controllers\Admin\AuthController::class, 'login']);
 
     /* PROTECTED */
-    Route::group(['middleware' => 'auth:admin-web-api'], function () {
+    Route::group(['middleware' => ['auth:admin-web-api', 'scopes:admins']], function () {
 
         // Update Admin
         Route::put('', [App\Http\Controllers\Admin\CRUDController::class, 'update']);
@@ -109,7 +109,7 @@ Route::prefix('member')->group(function () {
     Route::post('reset-password', [App\Http\Controllers\Member\AuthController::class, 'sendPasswordResetEmail']);
 
     /* PROTECTED */
-    Route::group(['middleware' => 'auth:mobile-api'], function () {
+    Route::group(['middleware' => ['auth:mobile-api', 'scopes:members']], function () {
         // Update member
         Route::put('', [App\Http\Controllers\Member\CRUDController::class, 'update']);
 

@@ -54,7 +54,7 @@ class AuthController extends Controller
             return response()->json($invalidCredentialsResponse, 401);
         }
 
-        $token = $member->createToken('Cooperative Member Token');
+        $token = $member->createToken('Cooperative Member Token', ['members']);
 
         $data = [
             'member' => $member,

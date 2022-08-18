@@ -27,5 +27,11 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+        Passport::routes();
+        Passport::tokensCan([
+            'admins' => 'Access Admin Routes',
+            'members' => 'Access Member Routes',
+            'superadmins' => 'Access Superadmin Routes',
+        ]);
     }
 }
