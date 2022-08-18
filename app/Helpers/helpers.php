@@ -94,7 +94,6 @@ function migrateNewSchema($schemaName)
 
     Artisan::call('db:seed', ['--class' => 'Database\Seeders\\CountriesSeeder']);
     Artisan::call('db:seed', ['--class' => 'Database\Seeders\\PlansSeeder']);
-    Artisan::call('db:seed', ['--class' => 'Database\Seeders\\AdminSeeder']);
 
     DB::unprepared('INSERT INTO oauth_personal_access_clients SELECT * FROM public.oauth_personal_access_clients');
     DB::unprepared('INSERT INTO oauth_clients SELECT * FROM public.oauth_clients');

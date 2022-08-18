@@ -62,3 +62,10 @@ This is how we can acheive that, `config(['database.connections.pgsql.search_pat
 - When you have successfuly connected, create a new database titled `coopco` and switch to it
 
 - If you were not able to setup Laravel Sail and you installed postgres separately, you'll need to start the postgres server and connect using the provided credentials when you setup postgres. Use the db client to connect and create the `coopco` database.
+
+### Setting up the Superadmin DB Schema
+Since the superadmin tables will be different from that of regular cooperatives, operations will be carried out in a different schema entirely. Run the following commands to setup the superadmin schema:
+-	`sail php artisan schema:migrate main`
+-	`sail php artisan schema:seed main`
+
+The superadmin schema name is `main`
