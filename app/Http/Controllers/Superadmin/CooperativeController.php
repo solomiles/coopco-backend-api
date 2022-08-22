@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Cooperative;
+use App\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class CooperativeController extends Controller
 {
@@ -17,6 +19,7 @@ class CooperativeController extends Controller
      * @return Response 
      */
     public function create(Request $request){
+        
         // Validate input fields
         $validate = $this->validator($request);
 
@@ -31,11 +34,17 @@ class CooperativeController extends Controller
         $this->switchMigrateSchema($request);
 
         // Store data for new cooperative
-        $this->store($request);
+        $cooperative = $this->store($request, New Cooperative);
+
+        // Store data for new cooperative admin
+        $admin = $this->storeAdmin($request);
 
         return response([
             'status' => true,
-            'message' => 'Post Created Successfully',
+            'message' => 'Cooperative Created Successfully',
+            'cooperative'=>$cooperative,
+            'admin_username'=>$admin['username'],
+            'admin_password'=>$admin['password']
         ], 200);
     }
 
@@ -53,7 +62,6 @@ class CooperativeController extends Controller
             'country'=>'required',
             'plan'=>'required',
             'domain_name'=>'required',
-            'content' => 'required'
         ]);
     }
 
@@ -78,7 +86,7 @@ class CooperativeController extends Controller
      * @param Request $request
      * @param Cooperative $cooperative
      *
-     * @return void
+     * @return Cooperative $cooperative
      */
     public function store($request, Cooperative $cooperative)
     {
@@ -98,5 +106,25 @@ class CooperativeController extends Controller
         $cooperative->logo = isset($photoName)?$photoName:null;
 
         $cooperative->save();
+
+        return $cooperative;
+    }
+
+    /**
+     * stores new cooperative admin data
+     * 
+     * @return Array
+     */
+    public function storeAdmin(Request $request) {
+        $admin = New Admin;
+        $password = randomPassword();
+
+        $admin->name = 'admin';
+        $admin->username = 'admin';
+        $admin->password = Hash::make($password);
+         
+        $admin->save();
+
+        return ['username'=>'admin', 'password'=>$password];
     }
 }
