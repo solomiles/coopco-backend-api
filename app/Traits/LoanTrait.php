@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Member;
+use Illuminate\Support\Facades\DB;
 
 trait LoanTrait
 {
@@ -12,14 +13,15 @@ trait LoanTrait
      * 
      * @param Loan $loan
      * @param string $attributeName
+     * @param boolean $all - Optionally get all attributes
      * 
      * @return mixed
      */
-    public function getAttr($loan, $attributeName)
+    public function getAttr($loan, $attributeName, $all = false)
     {
         $entityData = json_decode($loan->entity_data);
 
-        return $entityData->{$attributeName};
+        return $all ? $entityData : $entityData->{$attributeName};
     }
 
     /**
@@ -111,7 +113,7 @@ trait LoanTrait
     {
         $guarantors = $this->getAttr($loan, 'guarantors');
 
-        $validationRule = ['guarantors' => 'required|array|size:'.$guarantors->number];
+        $validationRule = ['guarantors' => 'required|array|size:' . $guarantors->number];
 
         $conditionalRule = $guarantors->have_accounts ? 'int|exists:members,id' : 'string';
 
@@ -137,5 +139,115 @@ trait LoanTrait
         }
 
         return $validationRule;
+    }
+
+    /**
+     * Compose loan subscription fields
+     * @param Loan $loan
+     * 
+     * @return array
+     */
+    public function subFields($loan)
+    {
+        $fixedInterest = $this->getAttr($loan, 'fixed_interest');
+        $accumulatedInterest = $this->getAttr($loan, 'accumulated_interest');
+
+        $subFields = [
+            'amount' => [
+                'type' => 'number',
+                'disabled' => false,
+                'hidden' => false
+            ],
+            'interest' => [
+                'type' => 'number',
+                'disabled' => true,
+                'hidden' => false
+            ]
+        ];
+
+
+        if ($fixedInterest) {
+            $entityData['deduction'] = [
+                'type' => 'number',
+                'disabled' => true,
+                'hidden' => false
+            ];
+        }
+
+        if ($accumulatedInterest) {
+            $subFields['accumulated_interest'] = [
+                'type' => 'number',
+                'disabled' => true,
+                'hidden' => false
+            ];
+        }
+
+
+        return $subFields;
+    }
+
+    /**
+     * Compose loan application fields
+     * @param Loan $loan
+     * 
+     * @return array
+     */
+    public function applicationFields($loan)
+    {
+        $duration = $this->getAttr($loan, 'duration');
+        $guarantors = $this->getAttr($loan, 'guarantors');
+
+        $applicationFields = [];
+        
+        if (count((array)$duration) > 1) {
+            $applicationFields['duration'] = [
+                'type' => 'select',
+                'options' => [],
+                'hidden' => false,
+                'disabled' => false
+            ];
+
+            foreach ($duration as $key => $value) {
+                $formattedLabel = str_replace('_', ' ', $key);
+                $formattedLabel = ucwords($formattedLabel) . ' (' . $value . ' months)';
+
+                array_push($applicationFields['duration']['options'], [
+                    'value' => $key,
+                    'label' => $formattedLabel
+                ]);
+            }
+        }
+
+        if ($guarantors->number > 0) {
+            $members = DB::select("SELECT id as value, concat(firstname, ' ', lastname, ' ', othernames) as label from members where deleted_at is null  order by label");
+
+            $applicationFields['guarantors'] = [];
+
+            for ($i = 1; $i <= $guarantors->number; $i++) {
+                if ($guarantors->have_accounts) {
+                    array_push($applicationFields['guarantors'], [
+                        'type' => 'select',
+                        'options' => $members,
+                        'hidden' => false,
+                        'disabled' => false
+                    ]);
+                } else {
+                    array_push($applicationFields['guarantors'], [
+                        [
+                            'type' => 'text',
+                            'hidden' => false,
+                            'disabled' => false
+                        ],
+                        [
+                            'type' => 'email',
+                            'hidden' => false,
+                            'disabled' => false
+                        ]
+                    ]);
+                }
+            }
+        }
+
+        return $applicationFields;
     }
 }

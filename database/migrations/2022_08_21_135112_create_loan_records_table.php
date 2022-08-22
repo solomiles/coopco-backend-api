@@ -19,8 +19,8 @@ return new class extends Migration
             $table->double('amount')->default(0);
             $table->double('interest')->default(0);
             $table->double('accumulated_interest')->default(0);
-            $table->int('month');
-            $table->int('year');
+            $table->integer('month');
+            $table->integer('year');
             $table->boolean('exempted')->default(false);
             $table->softDeletes();
             $table->timestamps();

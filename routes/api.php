@@ -26,7 +26,7 @@ Route::prefix('admin')->group(function () {
         // Update Admin
         Route::put('', [App\Http\Controllers\Admin\CRUDController::class, 'update']);
 
-        // Member
+        // Members
         Route::prefix('members')->group(function () {
 
             // Create
@@ -51,6 +51,7 @@ Route::prefix('admin')->group(function () {
             Route::put('/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'update']);
         });
 
+        // Messages
         Route::prefix('messages')->group(function () {
             // Send message
             Route::post('', [App\Http\Controllers\Shared\MessageController::class, 'send']);
@@ -71,6 +72,7 @@ Route::prefix('admin')->group(function () {
             Route::patch('read/{messageId}', [App\Http\Controllers\Shared\MessageController::class, 'markAsRead']);
         });
 
+        // News
         Route::prefix('news')->group(function () {
             // Create news post
             Route::post('', [App\Http\Controllers\Shared\NewsController::class, 'create']);
@@ -83,6 +85,13 @@ Route::prefix('admin')->group(function () {
 
             // Delete news post
             Route::delete('/{newsId}', [App\Http\Controllers\Shared\NewsController::class, 'delete']);
+        });
+
+        // Loans
+        Route::prefix('loans')->group(function () {
+
+            // Get a single loan
+            Route::get('/{loanId}', [App\Http\Controllers\Shared\LoanController::class, 'getOne']);
         });
     });
 });
