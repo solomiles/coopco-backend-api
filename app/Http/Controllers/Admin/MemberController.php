@@ -176,7 +176,7 @@ class MemberController extends Controller
      */
     public function getAll()
     {
-        $members = Member::paginate(20);
+        $members = Member::paginate(2);
 
         return response([
             'status' => true,
@@ -250,7 +250,7 @@ class MemberController extends Controller
             ->orWhere(DB::raw('lower(othernames)'), 'LIKE', '%' . $keyword . '%')
             ->orWhere(DB::raw('lower(email)'), 'LIKE', '%' . $keyword . '%')
             ->orWhere('phone', 'LIKE', '%' . $keyword . '%')
-            ->paginate(20);
+            ->paginate(2);
         
         return response([
             'status' => true,
