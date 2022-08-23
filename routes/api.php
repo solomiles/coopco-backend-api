@@ -105,11 +105,8 @@ Route::prefix('superadmin')->group(function () {
         // Login
         Route::post('login', [App\Http\Controllers\Superadmin\AuthController::class, 'login']);
 
-        /* PROTECTED */
-        Route::group(['middleware' => ['auth:super-web-api', 'scopes:superadmins']], function () {
-            // Create cooperative
-            Route::post('/cooperative',  [App\Http\Controllers\Superadmin\CooperativeController::class, 'create']);
-        });
+        // Create cooperative
+        Route::post('/cooperative',  [App\Http\Controllers\Superadmin\CooperativeController::class, 'create']);
     });
 });
 /******************************/

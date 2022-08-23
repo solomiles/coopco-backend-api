@@ -19,7 +19,6 @@ class CooperativeController extends Controller
      * @return Response 
      */
     public function create(Request $request){
-        
         // Validate input fields
         $validate = $this->validator($request);
 
@@ -45,7 +44,7 @@ class CooperativeController extends Controller
             'cooperative'=>$cooperative,
             'admin_username'=>$admin['username'],
             'admin_password'=>$admin['password']
-        ], 200);
+        ], 201);
     }
 
     /**
@@ -57,7 +56,7 @@ class CooperativeController extends Controller
     public function validator($request)
     {
         return Validator::make($request->all(), [
-            'logo' => 'sometimes|base64image|base64mimes:png,jpg,jpeg|base64max:6000',
+            'logo' => 'base64image|base64mimes:png,jpg,jpeg|base64max:6000',
             'name'=>'required',
             'country'=>'required',
             'plan'=>'required',
@@ -100,10 +99,10 @@ class CooperativeController extends Controller
         // Cooperative Data
         $cooperative->name = ucfirst($request->name);
         $cooperative->description = $request->description;
-        $cooperative->country = $request->country;
-        $cooperative->plan = $request->plan;
+        $cooperative->country_id = $request->country;
+        $cooperative->plan_id = $request->plan;
         $cooperative->domain_name = $request->domain_name;
-        $cooperative->logo = isset($photoName)?$photoName:null;
+        $cooperative->logo = isset($photoName)?$photoName:'';
 
         $cooperative->save();
 
