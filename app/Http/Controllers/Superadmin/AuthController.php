@@ -39,7 +39,7 @@ class AuthController extends Controller
         $username = $request->username;
         $password = $request->password;
 
-        switchSchema($request, 'main');
+        // switchSchema($request, 'main');
         $superadmin = Superadmin::where('username', $username)->first();
 
         if (!$superadmin) {

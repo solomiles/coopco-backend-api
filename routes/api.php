@@ -101,9 +101,13 @@ Route::prefix('admin')->group(function () {
 /** COOPCO SUPERADMIN ROUTES **/
 
 Route::prefix('superadmin')->group(function () {
+    Route::group(['middleware' => ['switchschema']], function () {
+        // Login
+        Route::post('login', [App\Http\Controllers\Superadmin\AuthController::class, 'login']);
 
-    // Login
-    Route::post('login', [App\Http\Controllers\Superadmin\AuthController::class, 'login']);
+        // Create cooperative
+        Route::post('/cooperative',  [App\Http\Controllers\Superadmin\CooperativeController::class, 'create']);
+    });
 });
 /******************************/
 
@@ -149,7 +153,7 @@ Route::prefix('member')->group(function () {
         });
 
         Route::prefix('news')->group(function () {
-            
+
             // Get news
             Route::get('', [App\Http\Controllers\Shared\NewsController::class, 'get']);
         });
