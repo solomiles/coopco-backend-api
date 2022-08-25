@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Traits\CsvTrait;
 
 class MemberController extends Controller
 {
-    use EmailTrait;
+    use EmailTrait, CsvTrait;
 
     /**
      * Create new member
@@ -257,5 +258,55 @@ class MemberController extends Controller
             'message' => 'Successful',
             'data' => $members
         ], 200);
+    }
+
+    /**
+     * Create more than one member
+     * 
+     * @param Request $request
+     * 
+     * @return void
+     *  
+     */
+    public function createBulk(Request $request){
+        $csv = base64ToFile($request->file);
+        $validate = $this->validateBulk($csv);
+
+        if (!$validate['status']) {
+            return response([
+                'status' => false,
+                'errors' => $validate['message']
+            ], 400);
+        }
+
+        // if (($open = fopen(storage_path() . "/students.csv", "r")) !== FALSE) {
+
+        //     while (($data = fgetcsv($open, 1000, ",")) !== FALSE) {
+        //         $students[] = $data;
+        //     }
+
+        //     fclose($open);
+        // }
+    }
+
+    /**
+     * Validate csv data
+     * 
+     * @param Illuminate\Http\UploadedFile $file
+     * 
+     * @return array - An array of the validation message and ststus
+     */
+    public function validateBulk($file){
+        $rules = [
+            'firstname'=>'required|string|max:50',
+            'lastname'=>'required|string|max:50',
+            'othernames'=>'max:100',
+            'email'=>'required|email:filter,rfc,dns|unique:members',
+            'phone'=>'required|max:15',
+            'gender'=>['required', Rule::in(['male', 'female','other'])],
+        ];
+        $message = $this->validateCSVFile($rules, $file);
+
+        return empty($message)?['status'=>true]:['status'=>false, 'message'=>$message];
     }
 }
