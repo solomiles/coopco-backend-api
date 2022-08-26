@@ -298,12 +298,13 @@ class MemberController extends Controller
      */
     public function validateBulk($file){
         $rules = [
-            'firstname'=>'required|string|max:50',
-            'lastname'=>'required|string|max:50',
-            'othernames'=>'max:100',
-            'email'=>'required|email:filter,rfc,dns|unique:members',
-            'phone'=>'required|max:15',
-            'gender'=>['required', Rule::in(['male', 'female','other'])],
+            // 'firstname'=>'required|string|max:50',
+            // 'lastname'=>'required|string|max:50',
+            // 'othernames'=>'max:100',
+            // 'email'=>'required|email:filter,rfc,dns|unique:members',
+            // 'phone'=>'required|max:15',
+            // 'gender'=>['required', Rule::in(['male', 'female','other'])],
+            'csv'=>'max_rows:250'
         ];
         $message = $this->validateCSVFile($rules, $file);
 
