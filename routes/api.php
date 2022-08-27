@@ -49,6 +49,9 @@ Route::prefix('admin')->group(function () {
 
             // Update member
             Route::put('/{memberId}', [App\Http\Controllers\Admin\MemberController::class, 'update']);
+
+            // Create bulk
+            Route::post('/bulk', [App\Http\Controllers\Admin\MemberController::class, 'createBulk']);
         });
 
         // Messages

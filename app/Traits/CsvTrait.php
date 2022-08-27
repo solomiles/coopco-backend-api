@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Library\CSVValidator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+
 trait CsvTrait
 {
 
@@ -63,11 +64,11 @@ trait CsvTrait
             $csvValidator = (new CSVValidator)->open($realPath, $rules);
 
             if ($csvValidator->fails()) {
-                return $csvValidator->getErrors();
+                return ['status' => false, 'messages' => $csvValidator->getErrors()];
             }
 
-            return $csvValidator->getData();
-        } catch (\Throwable$th) {
+            return ['status' => true, 'data' => $csvValidator->getData()];
+        } catch (\Throwable $th) {
             logger($th);
             return [$th->getMessage()];
         }

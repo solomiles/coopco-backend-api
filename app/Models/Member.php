@@ -14,4 +14,18 @@ class Member extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'created_at', 'updated_at', 'deleted_at',
     ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'firstname',
+        'lastname',
+        'othernames',
+        'email',
+        'phone',
+        'gender',
+    ];
 }
