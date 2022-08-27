@@ -43,7 +43,7 @@ class MemberController extends Controller
         $send = $this->sendWelcomeEmail($member);
         if (!$send) {
             $member->forceDelete();
-            
+
             return response([
                 'status' => false,
                 'message' => 'Could not send welcome email'
@@ -252,7 +252,7 @@ class MemberController extends Controller
             ->orWhere(DB::raw('lower(email)'), 'LIKE', '%' . $keyword . '%')
             ->orWhere('phone', 'LIKE', '%' . $keyword . '%')
             ->paginate(2);
-        
+
         return response([
             'status' => true,
             'message' => 'Successful',
@@ -268,10 +268,22 @@ class MemberController extends Controller
      * @return void
      *  
      */
-    public function createBulk(Request $request){
-        $csv = base64ToFile($request->file);
-        $validate = $this->validateBulk($csv);
+    public function createBulk(Request $request)
+    {
+        $csvFile = base64ToFile($request->file);
+        $realPath = $csvFile->getRealPath();
 
+        // Check the size of the CV
+        $fp = file($realPath, FILE_SKIP_EMPTY_LINES);
+        if (count($fp) > 250) {
+            return response([
+                'status' => false,
+                'errors' => 'The csv file must contain at most 250 rows.'
+            ], 400);
+        }
+
+        // Validate contents of csv file
+        $validate = $this->validateBulk($csvFile);
         if (!$validate['status']) {
             return response([
                 'status' => false,
@@ -279,14 +291,11 @@ class MemberController extends Controller
             ], 400);
         }
 
-        // if (($open = fopen(storage_path() . "/students.csv", "r")) !== FALSE) {
+        // Store data
+        $emailData = $this->storeBulk($realPath);
 
-        //     while (($data = fgetcsv($open, 1000, ",")) !== FALSE) {
-        //         $students[] = $data;
-        //     }
-
-        //     fclose($open);
-        // }
+        // Send bulk email to new members
+        $this->sendBulkEmail('Welcome', $emailData, 'bulk-test');
     }
 
     /**
@@ -296,18 +305,49 @@ class MemberController extends Controller
      * 
      * @return array - An array of the validation message and ststus
      */
-    public function validateBulk($file){
+    public function validateBulk($file)
+    {
         $rules = [
-            // 'firstname'=>'required|string|max:50',
-            // 'lastname'=>'required|string|max:50',
-            // 'othernames'=>'max:100',
-            // 'email'=>'required|email:filter,rfc,dns|unique:members',
-            // 'phone'=>'required|max:15',
-            // 'gender'=>['required', Rule::in(['male', 'female','other'])],
-            'csv'=>'max_rows:250'
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'othernames' => 'max:100',
+            'email' => 'required|email:filter,rfc,dns|unique:members',
+            'phone' => 'required|max:15',
+            'gender' => ['required', Rule::in(['male', 'female', 'other'])],
         ];
         $message = $this->validateCSVFile($rules, $file);
 
-        return empty($message)?['status'=>true]:['status'=>false, 'message'=>$message];
+        return empty($message) ? ['status' => true] : ['status' => false, 'message' => $message];
+    }
+
+    /**
+     * Store bulk member data
+     * 
+     * @param string $realPath - The path of the uploaded CSV file in temporary storage
+     * 
+     * @return array $emailData
+     */
+    public function storeBulk($realPath){
+        $emailData = [];
+
+        if (($open = fopen($realPath, "r")) !== FALSE) {
+            while (($data = fgetcsv($open, 1000, ",")) !== FALSE) {
+                $storeData = [
+                    'firstname' => $data[0],
+                    'lastname' => $data[1],
+                    'othernames' => $data[2],
+                    'email' => $data[3],
+                    'phone' => $data[4],
+                    'gender' => $data[5],
+                ];
+                Member::create($storeData);
+
+                // Add new member email data to email data array
+                $emailData[$storeData['email']] = $storeData;
+            }
+            fclose($open);
+        }
+
+        return $emailData;
     }
 }
