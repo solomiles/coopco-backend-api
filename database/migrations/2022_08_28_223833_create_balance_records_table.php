@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('balance_records', function (Blueprint $table) {
             $table->id();
-            $table->double('amount')->default(0);
+            $table->double('debit_amount')->default(0);
+            $table->double('credit_amount')->default(0);
+            $table->double('balance')->default(0);
             $table->integer('month');
             $table->integer('year');
             $table->foreignId('balance_id')->constrained('balances')->onDelete('cascade');

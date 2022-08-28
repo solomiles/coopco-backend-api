@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('loan_records', function (Blueprint $table) {
             $table->id();
-            $table->double('amount')->default(0);
+            $table->double('debit_amount')->default(0);
+            $table->double('credit_amount')->default(0);
+            $table->double('balance')->default(0);
             $table->double('interest')->default(0);
             $table->double('accumulated_interest')->default(0);
             $table->integer('month');
