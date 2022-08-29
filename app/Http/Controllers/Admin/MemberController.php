@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Traits\CsvTrait;
 
 class MemberController extends Controller
 {
-    use EmailTrait;
+    use EmailTrait, CsvTrait;
 
     /**
      * Create new member
@@ -42,7 +43,7 @@ class MemberController extends Controller
         $send = $this->sendWelcomeEmail($member);
         if (!$send) {
             $member->forceDelete();
-            
+
             return response([
                 'status' => false,
                 'message' => 'Could not send welcome email'
@@ -251,11 +252,99 @@ class MemberController extends Controller
             ->orWhere(DB::raw('lower(email)'), 'LIKE', '%' . $keyword . '%')
             ->orWhere('phone', 'LIKE', '%' . $keyword . '%')
             ->paginate(2);
-        
+
         return response([
             'status' => true,
             'message' => 'Successful',
             'data' => $members
         ], 200);
+    }
+
+    /**
+     * Create more than one member
+     * 
+     * @param Request $request
+     * 
+     * @return void
+     *  
+     */
+    public function createBulk(Request $request)
+    {
+        $csvFile = base64ToFile($request->csv);
+        $realPath = $csvFile->getRealPath();
+
+        // Check the number of records in the CSV file
+        $fp = file($realPath, FILE_SKIP_EMPTY_LINES);
+        if (count($fp) > 250) {
+            return response([
+                'status' => false,
+                'errors' => 'The csv file must contain at most 250 records.'
+            ], 400);
+        }
+
+        // Validate contents of csv file
+        $validate = $this->validateBulk($csvFile);
+        if (!$validate['status']) {
+            return response([
+                'status' => false,
+                'errors' => $validate['messages']
+            ], 400);
+        }
+
+        // Store data
+        $emailData = $this->storeBulk($validate);
+
+        // Send bulk email to new members
+        $this->sendBulkEmail('Welcome', $emailData, 'bulk-test');
+
+        return response([
+            'status' => true,
+            'message' => 'Successful',
+        ], 201);
+    }
+
+    /**
+     * Validate csv data
+     * 
+     * @param Illuminate\Http\UploadedFile $file
+     * 
+     * @return array - An array of the validation message and ststus
+     */
+    public function validateBulk($file)
+    {
+        $rules = [
+            'firstname' => 'required|string|max:50',
+            'lastname' => 'required|string|max:50',
+            'othernames' => 'max:100',
+            'email' => 'required|email:filter,rfc,dns|unique:members',
+            'phone' => 'required|max:15',
+            'gender' => ['required', Rule::in(['male', 'female', 'other'])],
+        ];
+        $res = $this->validateCSVFile($rules, $file);
+
+        return $res;
+    }
+
+    /**
+     * Store bulk member data
+     * 
+     * @param array $validate - The validated data
+     * 
+     * @return array $emailData
+     */
+    public function storeBulk($validate)
+    {
+        $userData = $validate['data'];
+
+        $emailData = array();
+
+        foreach ($userData as $key => $data) {
+            Member::create($data);
+
+            // Add new member email data to email data array
+            $emailData[$data['email']] = $data;
+        }
+
+        return $emailData;
     }
 }
